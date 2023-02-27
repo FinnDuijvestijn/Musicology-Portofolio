@@ -143,3 +143,10 @@ facet_wrap(~ category) +    # Separate charts per playlist.
     x = "Valence",
     y = "Energy",
   )
+
+
+awards |>
+  ggplot(aes(x = key_name, fill = key_name)) +
+  geom_bar() +
+  facet_wrap(~category) +
+  ggtitle("Distribution of keys in genre")

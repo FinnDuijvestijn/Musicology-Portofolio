@@ -7,12 +7,12 @@ output:
     theme: "default"
 
 ---
-Introduction {.storyboard} 
+Introduction {.storyboard data-icon="ion-ios-home"}
 =========================================
 
 
-### Week 6
-Introduction
+### introduction
+<font style="font-size: 30px">Introduction</font>
 
 For my corpus I chose a collection of songs from various genres including mainly Pop, Rap, and Phonk (which is a subgenre of hip hop and trap music). I chose this corpus because I wanted to explore the differences and similarities among various genres in terms of their musical characteristics.
 
@@ -24,8 +24,16 @@ Some examples of typical tracks in my corpus are "Invincible" by Pop Smoke, a po
 
 In conclusion, my corpus provides a glimpse into the musical characteristics of various popular genres, and offers opportunities for comparison and analysis.
 
-### Week 7  
-For the first plot I decided to compare the valence and energy of The three genres: Pop, Rap and Phonk. Since I wanted to see if there was any correlation between the valence of and the energy of songs. I expected the Pop genre to have the highest average valence out of the three genres, since these songs are often linked to positive vibes. And Phonk to have the highest energy values on average, since this genre is associated with fast, loud and noisy music (as can be seen in the plot where bigger points indicate louder songs). Therefore it was no surprise to see that pop had indead a relatively high valence and Phonk had a relatively high energy. However I was surprised to find out that the Phonk genre actually also scored relatively high on average for valence too, since I assumed this fast and loud type of music would give off an angry vibe. This shows that there could be a correlation between the valence and energy of songs. 
+### Plots
+<font style="font-size: 30px">Plots</font>
+
+The first bar chart gives a good representation of the differences in key usage between the three genres. Something interesting to look at is the most used key for example, both Phonk and Rap make use of the C# key the most. However it seems that in Rap songs, this key is used almost twice as much as any other key on average, while in Phonk is seems to be relatively balanced with the other keys. It is also interesting to see that Phonk does not have a single instance of the D# key. Finally we can clearly see that out of the three genres, Pop seems to have the most balanced distribution of key usage since it uses all keys and does not really have one major outstanding key.
+
+For the second plot I decided to compare the valence and energy of The three genres: Pop, Rap and Phonk. Since I wanted to see if there was any correlation between the valence of and the energy of songs. I expected the Pop genre to have the highest average valence out of the three genres, since these songs are often linked to positive vibes. And Phonk to have the highest energy values on average, since this genre is associated with fast, loud and noisy music (as can be seen in the plot where bigger points indicate louder songs). Therefore it was no surprise to see that pop had indead a relatively high valence and Phonk had a relatively high energy. However I was surprised to find out that the Phonk genre actually also scored relatively high on average for valence too, since I assumed this fast and loud type of music would give off an angry vibe. This shows that there could be a correlation between the valence and energy of songs.
+
+The third plots shows that interestingly enough, rap seems to have the highest danceability value on average according to spotify's measure. I would personally have guessed that Pop songs would have the highest danceability by a mile, so seeing Pop not scoring as high surprised me. I wonder what makes a song danceable by defenition of spotify, it would be interesting to see the exact features of this.
+
+The Chromatogram shows that for the Pop song: "Counting Stars" by "OneRepublic", the C# key has the longest time use by far.
 
 
 
@@ -33,6 +41,10 @@ For the first plot I decided to compare the valence and energy of The three genr
 library(tidyverse)
 library(spotifyr)
 library(flexdashboard)
+library(ggplot2)
+library(plotly)
+library(compmus)
+
 Sys.setenv(SPOTIFY_CLIENT_ID="34c9d0d698064bf886a78b343db5445b")
 Sys.setenv(SPOTIFY_CLIENT_SECRET="d0e93595f1ee411bb21938c5cb50d247")
 
@@ -52,9 +64,18 @@ awards <-
 ```
 
 
-Plots {.storyboard} 
+Visual analysis of my corpus {.storyboard data-icon="fa-signal"}
 =========================================
-### Relationship between loudness, energy and valence in Phonk, Rap & Pop 
+### Keys & Genre
+```{r, fig.width=8, fig.height=7}
+awards |>
+  ggplot(aes(x = key_name, fill = key_name)) +
+  geom_bar() +
+  facet_wrap(~category) +
+  ggtitle("Distribution of keys per genre")
+```
+
+### Energy & Valence
 ```{r, fig.width=8, fig.height=7}
 awards |>                    # Start with awards.
   ggplot(                     # Set up the plot.
@@ -90,39 +111,47 @@ facet_wrap(~ category) +    # Separate charts per playlist.
   ) + ggtitle("Relationship between loudness, energy and valence in Phonk, Rap & Pop")
 ```
 
-### Relationship between loudness, energy and valence in Phonk, Rap & Pop
-```{r, fig.width=8, fig.height=7}
-awards |>                    # Start with awards.
-  ggplot(                     # Set up the plot.
+### Dancebility
+
+```{r}
+awards |>
+  ggplot(aes(x = category, y = danceability, fill = category)) +
+  geom_boxplot()
+```
+
+### Chromatogram
+
+```{r}
+wood <-
+  get_tidy_audio_analysis("2tpWsVSb9UEmDRxAl1zhX1") |>
+  select(segments) |>
+  unnest(segments) |>
+  select(start, duration, pitches)
+wood |>
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
     aes(
-      x = valence,
-      y = energy,
-      size = loudness,
-      colour = energy
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
     )
   ) +
-  geom_point() +              # Scatter plot.
-  geom_rug(linewidth = 0.2) + # Add 'fringes' to show data distribution.
-
-facet_wrap(~ category) +    # Separate charts per playlist.
-  scale_x_continuous(         # Fine-tune the x axis.
-    limits = c(0, 1),
-    breaks = c(0, 0.50, 1),   # Use grid-lines for quadrants only.
-    minor_breaks = NULL       # Remove 'minor' grid-lines.
-  ) +
-  scale_y_continuous(         # Fine-tune the y axis in the same way.
-    limits = c(0, 1),
-    breaks = c(0, 0.50, 1),
-    minor_breaks = NULL
-  ) +
-  scale_size_continuous(      # Fine-tune the sizes of each point.
-    trans = "exp",            # Use an exp transformation to emphasise loud.
-    guide = "none"            # Remove the legend for size.
-  ) +
-  theme_light() +             # Use a simpler theme.
-  labs(                       # Make the titles nice.
-    x = "Valence",
-    y = "Energy",
-  ) + ggtitle("Relationship between loudness, energy and valence in Phonk, Rap & Pop")
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c()
 ```
+
+<!-- ------------------------------------------------------------------------ -->
+
+<!-- Here is a chromatogram from the Pop song: "Counting Stars" by "OneRepublic" -->
+
+
+What did I find {.storyboard data-icon="ion-music-note"}
+=========================================
+### Conclusion
+
+### Future research
 
