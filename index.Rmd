@@ -116,7 +116,8 @@ facet_wrap(~ category) +    # Separate charts per playlist.
 ```{r}
 awards |>
   ggplot(aes(x = category, y = danceability, fill = category)) +
-  geom_boxplot()
+  geom_boxplot(alpha = 0.7) +
+  scale_fill_brewer(palette="PuRd")
 ```
 
 ### Chromatogram

@@ -136,7 +136,8 @@ awards |>
 
 awards |>
   ggplot(aes(x = category, y = danceability, fill = category)) +
-  geom_boxplot()
+  geom_boxplot(alpha = 0.7) +
+  scale_fill_brewer(palette="PuRd")
 
 ggplot(iris, aes(Sepal.Length, Sepal.Width))+
   geom_point(aes(color = Sepal.Length)) +
@@ -144,3 +145,7 @@ ggplot(iris, aes(Sepal.Length, Sepal.Width))+
   theme_minimal() +
   theme(legend.position = "bottom")  
 
+ggplot(mpg, aes(x=class, y=hwy, fill=class)) + 
+  geom_boxplot(alpha=0.3) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Dark2")
