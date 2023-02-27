@@ -1,5 +1,6 @@
 library(tidyverse)
 library(spotifyr)
+library("viridis")           # Load
 
 Sys.setenv(SPOTIFY_CLIENT_ID="34c9d0d698064bf886a78b343db5445b")
 Sys.setenv(SPOTIFY_CLIENT_SECRET="d0e93595f1ee411bb21938c5cb50d247")
@@ -53,26 +54,7 @@ awards |>                    # Start with awards.
   ) +
   geom_point() +              # Scatter plot.
   geom_rug(linewidth = 0.1) + # Add 'fringes' to show data distribution.
-  # geom_text(                  # Add text labels from above.
-  #   aes(
-  #     x = valence,
-  #     y = energy,
-  #     label = label
-  #   ),
-  #   data =
-  #     tibble(
-  #       label = c("Altijd wel iemand", "ENERGY"),
-  #       category = c("Edisons", "Grammys"),
-  #       valence = c(0.090, 0.123),
-  #       energy = c(0.101, 0.967)
-  #     ),
-  #   colour = "black",         # Override colour (not mode here).
-  #   size = 3,                 # Override size (not loudness here).
-  #   hjust = "left",           # Align left side of label with the point.
-  #   vjust = "bottom",         # Align bottom of label with the point.
-  #   nudge_x = -0.05,          # Nudge the label slightly left.
-  #   nudge_y = 0.02            # Nudge the label slightly up.
-  # ) +
+ 
   facet_wrap(~ category) +    # Separate charts per playlist.
   scale_x_continuous(         # Fine-tune the x axis.
     limits = c(0, 1),
@@ -149,4 +131,16 @@ awards |>
   ggplot(aes(x = key_name, fill = key_name)) +
   geom_bar() +
   facet_wrap(~category) +
-  ggtitle("Distribution of keys in genre")
+  ggtitle("Distribution of keys per genre")
+
+
+awards |>
+  ggplot(aes(x = category, y = danceability, fill = category)) +
+  geom_boxplot()
+
+ggplot(iris, aes(Sepal.Length, Sepal.Width))+
+  geom_point(aes(color = Sepal.Length)) +
+  scale_color_viridis(option = "A")+
+  theme_minimal() +
+  theme(legend.position = "bottom")  
+
