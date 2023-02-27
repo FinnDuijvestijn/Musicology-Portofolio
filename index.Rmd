@@ -1,0 +1,128 @@
+---
+title: "Musicology-Portofolio"
+author: "Finn Duijvestijn"
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+    theme: "default"
+
+---
+Introduction {.storyboard} 
+=========================================
+
+
+### Week 6
+Introduction
+
+For my corpus I chose a collection of songs from various genres including mainly Pop, Rap, and Phonk (which is a subgenre of hip hop and trap music). I chose this corpus because I wanted to explore the differences and similarities among various genres in terms of their musical characteristics.
+
+The natural comparison points in my corpus are the different genres. I expect to see differences in terms of rhythm, melody, harmony, and lyrics. For example, I expect Pop music to have a more upbeat rhythm and catchy lyrics compared to Rap music which might have a heavier beat and very different lyrics. However, I also expect to see some similarities across genres, for example some artist make songs in different types of genres which could lead to similar intruments used or the same type of lyrics.
+
+The tracks in my corpus are representative of the groups I want to compare, as I selected them based on their popularity and mainstream recognition within each genre. However, it is possible that my corpus might not cover all sub-genres within each main genre, and therefore may not represent the full scope of each genre.
+
+Some examples of typical tracks in my corpus are "Invincible" by Pop Smoke, a popular Rap/Hiphop song, and "Counting Stars" by OneRepublic, a popular Pop song with its iconic vocal harmonies and theatrical elements. Atypical tracks in my corpus include "Sweater Weather" by the Neighbourhood, which is a mix between Indie rock and alternative rock, and "break from toronto" by PartyNextDoor, which could be classified as R&B or Hiphop but also contains a form of rap.
+
+In conclusion, my corpus provides a glimpse into the musical characteristics of various popular genres, and offers opportunities for comparison and analysis.
+
+### Week 7  
+For the first plot I decided to compare the valence and energy of The three genres: Pop, Rap and Phonk. Since I wanted to see if there was any correlation between the valence of and the energy of songs. I expected the Pop genre to have the highest average valence out of the three genres, since these songs are often linked to positive vibes. And Phonk to have the highest energy values on average, since this genre is associated with fast, loud and noisy music (as can be seen in the plot where bigger points indicate louder songs). Therefore it was no surprise to see that pop had indead a relatively high valence and Phonk had a relatively high energy. However I was surprised to find out that the Phonk genre actually also scored relatively high on average for valence too, since I assumed this fast and loud type of music would give off an angry vibe. This shows that there could be a correlation between the valence and energy of songs. 
+
+
+
+```{r}
+library(tidyverse)
+library(spotifyr)
+library(flexdashboard)
+Sys.setenv(SPOTIFY_CLIENT_ID="34c9d0d698064bf886a78b343db5445b")
+Sys.setenv(SPOTIFY_CLIENT_SECRET="d0e93595f1ee411bb21938c5cb50d247")
+
+access_token <- get_spotify_access_token()
+
+pop <- get_playlist_audio_features("", "2AipD5zTjWWM13wk2hZmej")
+phonk <- get_playlist_audio_features("", "37i9dQZF1DWWY64wDtewQt")
+rap <- get_playlist_audio_features("", "37i9dQZF1DX76t638V6CA8")
+
+awards <-
+  bind_rows(
+    pop |> mutate(category = "Pop"),
+    phonk |> mutate(category = "Phonk"),
+    rap |> mutate(category = "Rap")
+    
+  )
+```
+
+
+Plots {.storyboard} 
+=========================================
+### Relationship between loudness, energy and valence in Phonk, Rap & Pop 
+```{r, fig.width=8, fig.height=7}
+awards |>                    # Start with awards.
+  ggplot(                     # Set up the plot.
+    aes(
+      x = valence,
+      y = energy,
+      size = loudness,
+      colour = energy
+    )
+  ) +
+  geom_point() +              # Scatter plot.
+  geom_rug(linewidth = 0.2) + # Add 'fringes' to show data distribution.
+
+facet_wrap(~ category) +    # Separate charts per playlist.
+  scale_x_continuous(         # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),   # Use grid-lines for quadrants only.
+    minor_breaks = NULL       # Remove 'minor' grid-lines.
+  ) +
+  scale_y_continuous(         # Fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_size_continuous(      # Fine-tune the sizes of each point.
+    trans = "exp",            # Use an exp transformation to emphasise loud.
+    guide = "none"            # Remove the legend for size.
+  ) +
+  theme_light() +             # Use a simpler theme.
+  labs(                       # Make the titles nice.
+    x = "Valence",
+    y = "Energy",
+  ) + ggtitle("Relationship between loudness, energy and valence in Phonk, Rap & Pop")
+```
+
+### Relationship between loudness, energy and valence in Phonk, Rap & Pop
+```{r, fig.width=8, fig.height=7}
+awards |>                    # Start with awards.
+  ggplot(                     # Set up the plot.
+    aes(
+      x = valence,
+      y = energy,
+      size = loudness,
+      colour = energy
+    )
+  ) +
+  geom_point() +              # Scatter plot.
+  geom_rug(linewidth = 0.2) + # Add 'fringes' to show data distribution.
+
+facet_wrap(~ category) +    # Separate charts per playlist.
+  scale_x_continuous(         # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),   # Use grid-lines for quadrants only.
+    minor_breaks = NULL       # Remove 'minor' grid-lines.
+  ) +
+  scale_y_continuous(         # Fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_size_continuous(      # Fine-tune the sizes of each point.
+    trans = "exp",            # Use an exp transformation to emphasise loud.
+    guide = "none"            # Remove the legend for size.
+  ) +
+  theme_light() +             # Use a simpler theme.
+  labs(                       # Make the titles nice.
+    x = "Valence",
+    y = "Energy",
+  ) + ggtitle("Relationship between loudness, energy and valence in Phonk, Rap & Pop")
+```
+
