@@ -1,6 +1,8 @@
 library(tidyverse)
 library(spotifyr)
-library("viridis")           # Load
+library("viridis")
+library(ggplot2)
+library(plotly)# Load
 
 Sys.setenv(SPOTIFY_CLIENT_ID="34c9d0d698064bf886a78b343db5445b")
 Sys.setenv(SPOTIFY_CLIENT_SECRET="d0e93595f1ee411bb21938c5cb50d247")
@@ -127,11 +129,12 @@ facet_wrap(~ category) +    # Separate charts per playlist.
   )
 
 
-awards |>
-  ggplot(aes(x = key_name, fill = key_name)) +
+p1 <- awards %>%
+ ggplot(aes(x = key_name, fill = key_name)) +
   geom_bar() +
   facet_wrap(~category) +
   ggtitle("Distribution of keys per genre")
+ggplotly(p1)
 
 
 awards |>
@@ -149,3 +152,35 @@ ggplot(mpg, aes(x=class, y=hwy, fill=class)) +
   geom_boxplot(alpha=0.3) +
   theme(legend.position="none") +
   scale_fill_brewer(palette="Dark2")
+
+
+
+
+library(tidyverse)
+library(spotifyr)
+library(flexdashboard)
+library(ggplot2)
+library(plotly)
+library(compmus)
+
+wood <-
+  get_tidy_audio_analysis("2tpWsVSb9UEmDRxAl1zhX1") |>
+  select(segments) |>
+  unnest(segments) |>
+  select(start, duration, pitches)
+wood |>
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c(option = "mako")
+
