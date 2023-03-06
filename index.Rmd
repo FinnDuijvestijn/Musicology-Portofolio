@@ -419,7 +419,7 @@ bzt |>
 
 ***
 
-The plots show the changes regarding timbre of typical songs from each genre: Pop, Phonk and Rap
+The plots show the changes regarding timbre of typical songs from each genre: Pop, Phonk and Rap...
 
 
 What did I find {.storyboard data-icon="ion-music-note"}
