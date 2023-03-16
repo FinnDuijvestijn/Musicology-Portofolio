@@ -1,0 +1,167 @@
+---
+title: "Musicology-Portfolio"
+author: "Finn Duijvestijn"
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+    theme:
+      version: 5
+
+---
+
+```{r}
+library(tidyverse)
+library(spotifyr)
+library(flexdashboard)
+library(ggplot2)
+library(plotly)
+library(compmus)
+
+library(cowplot)
+library(patchwork)
+
+Sys.setenv(SPOTIFY_CLIENT_ID="34c9d0d698064bf886a78b343db5445b")
+Sys.setenv(SPOTIFY_CLIENT_SECRET="d0e93595f1ee411bb21938c5cb50d247")
+
+access_token <- get_spotify_access_token()
+
+pop <- get_playlist_audio_features("", "2AipD5zTjWWM13wk2hZmej")
+phonk <- get_playlist_audio_features("", "37i9dQZF1DWWY64wDtewQt")
+rap <- get_playlist_audio_features("", "37i9dQZF1DX76t638V6CA8")
+
+awards <-
+  bind_rows(
+    pop |> mutate(category = "Pop"),
+    phonk |> mutate(category = "Phonk"),
+    rap |> mutate(category = "Rap")
+    
+  )
+```
+
+Introduction {.storyboard data-icon="ion-ios-home"}
+=========================================
+
+### Exploring the Unique Sounds: A Comparison of Three Distinct Music Genres
+<font style="font-size: 30px">My Corpus choice</font>
+
+My corpus consists of a collection of songs from various genres including mainly Pop, Rap, and Phonk (which is a sub
+
+***
+
+<!-- <iframe src="https://open.spotify.com/embed/playlist/2AipD5zTjWWM13wk2hZmej?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> -->
+
+<!-- <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWY64wDtewQt?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> -->
+
+<!-- <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DX76t638V6CA8?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> -->
+```{r picture, echo = F,  out.width = '100%'}
+knitr::include_graphics("pics/pop.jpg")
+knitr::include_graphics("pics/rap.jpg")
+knitr::include_graphics("pics/phonk.jpg")
+```
+
+
+
+Visual analysis of my corpus {.storyboard data-icon="fa-signal"}
+=========================================
+
+### Keys & Genre
+
+
+
+
+Chroma features {.storyboard data-icon="ion-music-note"}
+=========================================
+
+### Chromas
+
+```{r pop-chroma}
+ewf <-
+  get_tidy_audio_analysis("2tpWsVSb9UEmDRxAl1zhX1") |>
+  select(segments) |>
+  unnest(segments) |>
+  select(start, duration, pitches)
+loveontop <-
+  get_tidy_audio_analysis("3CLSHJv5aUROAN2vfOyCOh") |>
+  select(segments) |>
+  unnest(segments) |>
+  select(start, duration, pitches)
+allineed <-
+  get_tidy_audio_analysis("792HwhrdO3ErRKL5yRe4Ge") |>
+  select(segments) |>
+  unnest(segments) |>
+  select(start, duration, pitches)
+```
+
+```{r pop-chroma-plots}
+ewf_plot <- ewf |>
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+    geom_vline(xintercept = 53, color = "red") +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Pop: 'Counting Stars' by 'OneRepublic'") +
+  # theme_minimal() +
+  scale_fill_viridis_c(option = "mako") 
+
+loveontop_plot <- loveontop |>
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  geom_vline(xintercept = 184, color = "red") +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Phonk: 'Close Eyes' by 'DRVST'") +
+  theme(legend.position="none") +
+  scale_fill_viridis_c(option = "mako") 
+
+allineed_plot <- allineed |>
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) |>
+  compmus_gather_chroma() |> 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  geom_vline(xintercept = 137, color = "red") +
+  geom_vline(xintercept = 186, color = "red") +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Rap: 'Invincible' by 'Pop Smoke'") +
+  theme(legend.position="none") +
+  scale_fill_viridis_c(option = "mako") 
+
+# subplot(ewf_plot, loveontop_plot, allineed_plot, nrows = 3)
+# plot_grid(ewf_plot, loveontop_plot, allineed_plot, ncol = 1)
+ewf_plot / loveontop_plot / allineed_plot + plot_layout(width = 900, height = 600)
+```
+
+***
+
+Chroma can be a
+
+
+
+
+What did I find {.storyboard data-icon="fa-spotify"}
+=========================================
+
+### Conclusion
+
+
+### Discussion
+
