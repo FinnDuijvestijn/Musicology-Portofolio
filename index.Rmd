@@ -17,6 +17,9 @@ library(ggplot2)
 library(plotly)
 library(compmus)
 
+library(cowplot)
+library(patchwork)
+
 Sys.setenv(SPOTIFY_CLIENT_ID="34c9d0d698064bf886a78b343db5445b")
 Sys.setenv(SPOTIFY_CLIENT_SECRET="d0e93595f1ee411bb21938c5cb50d247")
 
@@ -101,7 +104,7 @@ This bar chart gives a good representation of the differences in key usage betwe
 
 ### Energy & Valence
 ```{r}
-p <- awards %>%                    # Start with awards.
+p <- awards |>                    # Start with awards.
   ggplot(                     # Set up the plot.
     aes(
       x = valence,
@@ -160,6 +163,91 @@ This boxplot shows that interestingly enough, rap seems to have the highest danc
 
 
 
+### Track-Level Summary
+
+```{r summary_1}
+bebop <-
+  get_playlist_audio_features(
+    "thesoundsofspotify",
+    "55s8gstHcaCyfU47mQgLrB"
+  ) |>
+  slice(1:30) |>
+  add_audio_analysis()
+bigband <-
+  get_playlist_audio_features(
+    "thesoundsofspotify",
+    "2cjIvuw4VVOQSeUAZfNiqY"
+  ) |>
+  slice(1:30) |>
+  add_audio_analysis()
+jazz <-
+  bebop |>
+  mutate(genre = "Bebop") |>
+  bind_rows(bigband |> mutate(genre = "Big Band"))
+
+jazz1 <- jazz |>
+  mutate(
+    sections =
+      map(
+        sections,                                    # sections or segments
+        summarise_at,
+        vars(tempo, loudness, duration),             # features of interest
+        list(section_mean = mean, section_sd = sd)   # aggregation functions
+      )
+  ) |>
+  unnest(sections) |>
+  ggplot(
+    aes(
+      x = tempo,
+      y = tempo_section_sd,
+      colour = genre,
+      alpha = loudness
+    )
+  ) +
+  geom_point(aes(size = duration / 60)) +
+  geom_rug() +
+  theme_minimal() +
+  ylim(0, 5) +
+  labs(
+    x = "Mean Tempo (bpm)",
+    y = "SD Tempo",
+    colour = "Genre",
+    size = "Duration (min)",
+    alpha = "Volume (dBFS)"
+  )
+```
+
+```{r summary_2}
+jazz2 <- jazz |>
+  mutate(
+    timbre =
+      map(
+        segments,
+        compmus_summarise,
+        timbre,
+        method = "mean"
+      )
+  ) |>
+  select(genre, timbre) |>
+  compmus_gather_timbre() |>
+  ggplot(aes(x = basis, y = value, fill = genre)) +
+  geom_violin() +
+  scale_fill_viridis_d() +
+  labs(x = "Spotify Timbre Coefficients", y = "", fill = "Genre")
+
+# subplot(jazz1, jazz2, nrows = 2)
+jazz1 / jazz2
+```
+
+***
+
+The selection of an appropriate corpus is essential to effectively achieve research objectives. In this study, a broad corpus was chosen that included diverse data related to the research question. However, the large volume of data made it difficult to identify significant patterns or trends that could adequately address the research question.
+
+To overcome this challenge, the decision was made to focus on the outliers in the corpus. Specifically, the analysis focused on the extreme cases that were most divergent from the norm in terms of a specific timbre component. This approach allowed for the isolation and study of the outliers, leading to valuable insights and a better understanding of the factors contributing to their unique timbre characteristics. Ultimately, this approach strengthened the analysis and enhanced the quality of the research findings.
+
+Timbre, the quality of sound that distinguishes different musical instruments, is a crucial aspect of music. The analysis of timbre is often performed using spectral content, which measures the relative strengths of various frequency components that make up the sound. In this study, the focus was on a specific timbre component, which was used to isolate and study the outliers in the corpus.
+
+
 
 Chroma features {.storyboard data-icon="ion-music-note"}
 =========================================
@@ -198,7 +286,8 @@ ewf_plot <- ewf |>
   ) +
   geom_tile() +
     geom_vline(xintercept = 53, color = "red") +
-  labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Pop: 'Counting Stars' by 'OneRepublic'") +
+  # labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Pop: 'Counting Stars' by 'OneRepublic'") +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   # theme_minimal() +
   scale_fill_viridis_c(option = "mako") 
 
@@ -215,7 +304,8 @@ loveontop_plot <- loveontop |>
   ) +
   geom_tile() +
   geom_vline(xintercept = 184, color = "red") +
-  labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Phonk: 'Close Eyes' by 'DRVST'") +
+  # labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Phonk: 'Close Eyes' by 'DRVST'") +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   theme(legend.position="none") +
   scale_fill_viridis_c(option = "mako") 
 
@@ -233,7 +323,8 @@ allineed_plot <- allineed |>
   geom_tile() +
   geom_vline(xintercept = 137, color = "red") +
   geom_vline(xintercept = 186, color = "red") +
-  labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Rap: 'Invincible' by 'Pop Smoke'") +
+  # labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Rap: 'Invincible' by 'Pop Smoke'") +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   theme(legend.position="none") +
   scale_fill_viridis_c(option = "mako") 
 
@@ -243,11 +334,11 @@ subplot(ewf_plot, loveontop_plot, allineed_plot, nrows = 3)
 
 ***
 
-The Chromatogram shows that for the Pop song: "Counting Stars" by "OneRepublic", the C# key has the longest time use by far and it seems that the C key comes second. The rest of the keys do not seem to get much playtime in comparison.
+A chromagram is a visual representation of the distribution of pitches in a musical recording. The first chromatogram shows that for the Pop song: "Counting Stars" by "OneRepublic", the C# key has the longest time use by far and it seems that the C key comes second. The rest of the keys do not seem to get much playtime in comparison.
 
-The Chromatogram shows that for the Pop song: "Close Eyes" by "DRVST", the C key has the longest time use by far and it seems that the C#, F and E keys follow regarding playtime. The rest of the keys do not seem to get much playtime in comparison.
+The second chromatogram shows that for the Pop song: "Close Eyes" by "DRVST", the C key has the longest time use by far and it seems that the C#, F and E keys follow regarding playtime. The rest of the keys do not seem to get much playtime in comparison.
 
-The Chromatogram shows that for the Pop song: "Invincible" by "Pop Smoke", the F# key has the longest time use by far, all the other keys do not even come close to having as much playtime.
+The third chromatogram shows that for the Pop song: "Invincible" by "Pop Smoke", the F# key has the longest time use by far, all the other keys do not even come close to having as much playtime.
 
 Interestingly there seems to be some overlap between Pop and Phonk specific songs, whereby both genres seem to have the most playtime of the C and C# keys while the A#, A, D#, D keys all seem to have not much playtime. Furthermore it looks like the Rap song also makes the least use of the A# and D# keys, however these are the only comparable points since the F# key is being used the longest by far and the rest of keys being almost equally distributed.
 
@@ -255,7 +346,7 @@ Interestingly there seems to be some overlap between Pop and Phonk specific song
 ### Cepstrograms
 
 <!-- #### Pop: "Counting Stars" by "OneRepublic" -->
-<font style="font-size: 25px">Pop: "Counting Stars" by "OneRepublic"</font>
+<!-- <font style="font-size: 25px">Pop: "Counting Stars" by "OneRepublic"</font> -->
 
 ```{r timbre_pop}
 # Cepstrograms
@@ -278,7 +369,8 @@ bzt <-
           method = "rms", norm = "euclidean"              # Change summary & norm.
       )
   )
-bzt |>
+
+cep_pop <- bzt |>
   compmus_gather_timbre() |>
   ggplot(
     aes(
@@ -292,31 +384,32 @@ bzt |>
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   scale_fill_viridis_c() +
   theme_classic()+
-  ggtitle("Timbre")+
+  # ggtitle("Timbre")+
   theme(plot.title = element_text(hjust = 0.5))
-# SELF SIMILARITY MATRIX
-bzt |>
-  compmus_self_similarity(timbre, "cosine") |>
-  ggplot(
-    aes(
-      x = xstart + xduration / 2,
-      width = xduration,
-      y = ystart + yduration / 2,
-      height = yduration,
-      fill = d
-    )
-  ) +
-  geom_tile() +
-  coord_fixed() +
-  scale_fill_viridis_c(guide = "none") +
-  theme_classic() +
-  labs(x = "", y = "")+
-  ggtitle("Timbre")+
-  theme(plot.title = element_text(hjust = 0.5))
+
+# # SELF SIMILARITY MATRIX
+# bzt |>
+#   compmus_self_similarity(timbre, "cosine") |>
+#   ggplot(
+#     aes(
+#       x = xstart + xduration / 2,
+#       width = xduration,
+#       y = ystart + yduration / 2,
+#       height = yduration,
+#       fill = d
+#     )
+#   ) +
+#   geom_tile() +
+#   coord_fixed() +
+#   scale_fill_viridis_c(guide = "none") +
+#   theme_classic() +
+#   labs(x = "", y = "")+
+#   ggtitle("Timbre")+
+#   theme(plot.title = element_text(hjust = 0.5))
 ```
 
 <!-- #### Phonk: "Close Eyes" by "DVRST" -->
-<font style="font-size: 25px">Phonk: "Close Eyes" by "DVRST"</font>
+<!-- <font style="font-size: 25px">Phonk: "Close Eyes" by "DVRST"</font> -->
 
 ```{r timbre_phonk}
 # Cepstrograms
@@ -339,7 +432,8 @@ bzt <-
           method = "rms", norm = "euclidean"              # Change summary & norm.
       )
   )
-bzt |>
+
+cep_phonk <- bzt |>
   compmus_gather_timbre() |>
   ggplot(
     aes(
@@ -353,31 +447,32 @@ bzt |>
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   scale_fill_viridis_c() +
   theme_classic()+
-  ggtitle("Timbre")+
+  # ggtitle("Timbre")+
   theme(plot.title = element_text(hjust = 0.5))
+
 # SELF SIMILARITY MATRIX
-bzt |>
-  compmus_self_similarity(timbre, "cosine") |>
-  ggplot(
-    aes(
-      x = xstart + xduration / 2,
-      width = xduration,
-      y = ystart + yduration / 2,
-      height = yduration,
-      fill = d
-    )
-  ) +
-  geom_tile() +
-  coord_fixed() +
-  scale_fill_viridis_c(guide = "none") +
-  theme_classic() +
-  labs(x = "", y = "")+
-  ggtitle("Timbre")+
-  theme(plot.title = element_text(hjust = 0.5))
+# bzt |>
+#   compmus_self_similarity(timbre, "cosine") |>
+#   ggplot(
+#     aes(
+#       x = xstart + xduration / 2,
+#       width = xduration,
+#       y = ystart + yduration / 2,
+#       height = yduration,
+#       fill = d
+#     )
+#   ) +
+#   geom_tile() +
+#   coord_fixed() +
+#   scale_fill_viridis_c(guide = "none") +
+#   theme_classic() +
+#   labs(x = "", y = "")+
+#   ggtitle("Timbre")+
+#   theme(plot.title = element_text(hjust = 0.5))
 ```
 
 <!-- #### Rap: "Invincible" by "Pop Smoke" -->
-<font style="font-size: 25px">Rap: "Invincible" by "Pop Smoke"</font>
+<!-- <font style="font-size: 25px">Rap: "Invincible" by "Pop Smoke"</font> -->
 
 
 ```{r timbre_rap}
@@ -401,7 +496,8 @@ bzt <-
           method = "rms", norm = "euclidean"              # Change summary & norm.
       )
   )
-bzt |>
+
+cep_rap <- bzt |>
   compmus_gather_timbre() |>
   ggplot(
     aes(
@@ -415,11 +511,79 @@ bzt |>
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   scale_fill_viridis_c() +
   theme_classic()+
-  ggtitle("Timbre")+
+  # ggtitle("Timbre")+
   theme(plot.title = element_text(hjust = 0.5))
+
+subplot(cep_pop, cep_phonk, cep_rap, nrows = 3)
 # SELF SIMILARITY MATRIX
-bzt |>
-  compmus_self_similarity(timbre, "cosine") |>
+# bzt |>
+#   compmus_self_similarity(timbre, "cosine") |>
+#   ggplot(
+#     aes(
+#       x = xstart + xduration / 2,
+#       width = xduration,
+#       y = ystart + yduration / 2,
+#       height = yduration,
+#       fill = d
+#     )
+#   ) +
+#   geom_tile() +
+#   coord_fixed() +
+#   scale_fill_viridis_c(guide = "none") +
+#   theme_classic() +
+#   labs(x = "", y = "")+
+#   ggtitle("Timbre")+
+#   theme(plot.title = element_text(hjust = 0.5))
+```
+
+***
+
+The ceptrograms show the changes regarding timbre of typical songs from each genre: Pop, Phonk and Rap.
+A ceptrogram is a visual representation of the distribution of timbral characteristics in a musical recording. Comparing the ceptrograms of three songs, “Counting Stars” from the Pop genre, “Close Eyes” from the Phonk genre and "Invincible"from the rap genre, reveals interesting differences in their timbral distribution. In “Counting Stars” there is a relavtively strong concentration of timbral characteristics around a certain range, indicating a pretty stable sonic texture. On the other hand, both “Invincible” and "Close Eyes" show more variation in timbral distribution, with a wider range of timbral characteristics. This suggests that these two have a more complex and varied sound texture. These differences in timbral distribution could contribute to the overall appeal of the songs and could be further explored in future analyses.
+
+
+### Self-similarity matrices
+
+```{r self sim, echo=FALSE}
+norms_chroma <- list("euclidean", "manhattan", "chebyshev")
+dists_chroma <- list("manhattan", "aitchison", "cosine", "angular")
+summary_chroma <- list("mean", "aitchison_centre", "root_mean_square", "max", "acentre")
+
+norms_timbre <- list("euclidean", "manhattan", "chebyshev")
+dists_timbre <- list("euclidean", "cosine", "angular")
+summary_timbre <- list("mean", "root_mean_square")
+
+taste2 <-
+  get_tidy_audio_analysis("2QjOHCTQ1Jl3zawyYOpxh6") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = summary_chroma[5], norm = norms_chroma[3]
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = summary_timbre[1]
+      )
+  )
+```
+
+```{r self sim matrices, echo=FALSE}
+self_sim <- bind_rows(
+  taste2 |> 
+    compmus_self_similarity(pitches, dists_chroma[1]) |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  taste2 |> 
+    compmus_self_similarity(timbre, dists_timbre[2]) |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
   ggplot(
     aes(
       x = xstart + xduration / 2,
@@ -431,16 +595,36 @@ bzt |>
   ) +
   geom_tile() +
   coord_fixed() +
-  scale_fill_viridis_c(guide = "none") +
-  theme_classic() +
-  labs(x = "", y = "")+
-  ggtitle("Timbre")+
-  theme(plot.title = element_text(hjust = 0.5))
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "mako", guide = "none") +
+  theme_classic() + 
+  labs(x = "", y = "")
+
+self_sim_ggplotly <- ggplotly(self_sim, domain = list(x=c(0,1), y=c(0.6,1)))
+
+parts <- data.frame(
+  Chroma = c("0:00 - 0:23", "0:23 - 0:49", "0:49 - 1:12", "1:12 - 1:20", "1:20 - 2:28", ""), 
+  Timbre = c("0:00 - 0:23", "0:23 - 1:12", "", "1:12 - 1:20", "1:20 - 1:24", "1:24 - 1:28"),
+  Chroma2 = c("", "2:28 - 3:08", "3:08 - 4:11", "", "4:11 - 4:19", ""), 
+  Timbre2 = c("1:28 - 2:28", "2:28 - 3:08", "3:08 - 3:35", "3:35 - 4:11", "4:11 - 4:19", ""))
+```
+
+```{r subplot, echo=FALSE}
+parts_table <- plot_ly(
+    type = 'table',
+    domain = list(x=c(0,1), y=c(0,0.4)),
+    header = list(values = c("Chroma", "Timbre", "Chroma", "Timbre")),
+    cells = list(values = rbind(parts$Chroma, parts$Timbre, parts$Chroma2, parts$Timbre2), height=25)
+  )
+subplot(self_sim_ggplotly, parts_table, nrows=2)
 ```
 
 ***
 
-The plots show the changes regarding timbre of typical songs from each genre: Pop, Phonk and Rap...
+A self-similarity matrix is a visual representation of the similarity between different sections of a musical recording. The two self-similarity matrices, each summarised at the bar level but with axes in seconds, illustrate pitch- and timbre-based self-similarity within the song sweater weather.
+
+
+
 
 
 
@@ -546,7 +730,7 @@ sad <-
 ```
 
 ```{r keygram, echo=FALSE}
-sad |>
+sad1 <- sad |>
   compmus_match_pitch_template(
     key_templates,         # Change to chord_templates if descired
     method = "euclidean",  # Try different distance metrics
@@ -559,6 +743,7 @@ sad |>
   scale_fill_viridis_c(guide = "none") +
   theme_minimal() +
   labs(x = "Time (s)", y = "")
+ggplotly(sad1)
 ```
 
 ***
@@ -566,84 +751,22 @@ sad |>
 This is a keygram from one of the last songs from _XXXTENTACION_: [SAD!](https://open.spotify.com/track/3ee8Jmje8o58CHK66QrVC2?si=450dd927a69547c9) brought out before he died the 18th of june 2018.
 
 
-### Self-similarity matrices
 
-```{r self sim, echo=FALSE}
-norms_chroma <- list("euclidean", "manhattan", "chebyshev")
-dists_chroma <- list("manhattan", "aitchison", "cosine", "angular")
-summary_chroma <- list("mean", "aitchison_centre", "root_mean_square", "max")
+### temporal features
 
-norms_timbre <- list("euclidean", "manhattan", "chebyshev")
-dists_timbre <- list("euclidean", "cosine", "angular")
-summary_timbre <- list("mean", "root_mean_square")
-taste2 <-
-  get_tidy_audio_analysis("6usFrqlplLLU9OUDq936iE") |>
-  compmus_align(bars, segments) |>
-  select(bars) |>
-  unnest(bars) |>
-  mutate(
-    pitches =
-      map(segments,
-        compmus_summarise, pitches,
-        method = summary_chroma[4], norm = norms_chroma[3]
-      )
-  ) |>
-  mutate(
-    timbre =
-      map(segments,
-        compmus_summarise, timbre,
-        method = summary_timbre[1]
-      )
-  )
-```
-
-```{r self sim matrices, echo=FALSE}
-self_sim <- bind_rows(
-  taste2 |> 
-    compmus_self_similarity(pitches, dists_chroma[1]) |> 
-    mutate(d = d / max(d), type = "Chroma"),
-  taste2 |> 
-    compmus_self_similarity(timbre, dists_timbre[2]) |> 
-    mutate(d = d / max(d), type = "Timbre")
-) |>
-  mutate() |> 
-  ggplot(
-    aes(
-      x = xstart + xduration / 2,
-      width = xduration,
-      y = ystart + yduration / 2,
-      height = yduration,
-      fill = d
-    )
-  ) +
-  geom_tile() +
-  coord_fixed() +
-  facet_wrap(~type) +
-  scale_fill_viridis_c(option = "E", guide = "none") +
-  theme_classic() + 
-  labs(x = "", y = "")
-self_sim_ggplotly <- ggplotly(self_sim, domain = list(x=c(0,1), y=c(0.6,1)))
-parts <- data.frame(
-  Chroma = c("0:00 - 0:23", "0:23 - 0:49", "0:49 - 1:12", "1:12 - 1:20", "1:20 - 2:28", ""), 
-  Timbre = c("0:00 - 0:23", "0:23 - 1:12", "", "1:12 - 1:20", "1:20 - 1:24", "1:24 - 1:28"),
-  Chroma2 = c("", "2:28 - 3:08", "3:08 - 4:11", "", "4:11 - 4:19", ""), 
-  Timbre2 = c("1:28 - 2:28", "2:28 - 3:08", "3:08 - 3:35", "3:35 - 4:11", "4:11 - 4:19", ""))
-```
-
-```{r subplot, echo=FALSE}
-parts_table <- plot_ly(
-    type = 'table',
-    domain = list(x=c(0,1), y=c(0,0.4)),
-    header = list(values = c("Chroma", "Timbre", "Chroma", "Timbre")),
-    cells = list(values = rbind(parts$Chroma, parts$Timbre, parts$Chroma2, parts$Timbre2), height=25)
-  )
-subplot(self_sim_ggplotly, parts_table, nrows=2)
+```{r}
+get_tidy_audio_analysis('6PJasPKAzNLSOzxeAH33j2') |> 
+    tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |> 
+    ggplot(aes(x = time, y = bpm, fill = power)) + 
+    geom_raster() + 
+    scale_fill_viridis_c(guide = 'none') +
+    labs(x = 'Time (s)', y = 'Tempo (BPM)') +
+    theme_classic()
 ```
 
 ***
 
-daassaddasfasd
-
+The Fourier-based tempogram at the left is an attempt to use Spotify's API to analyse the tempo of Graveola's 'Samba de outro lugar'. Overall, Spotify estimates that the tempo of this track is 124 BPM, but looking in more detail at the tempogram, we see that the different sections of the piece lead to different strengths of so-called *tempo octaves*. In some freer-form sections of the piece, tempo estimation is almost impossible.
 
 
 
