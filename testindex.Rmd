@@ -54,86 +54,60 @@ My corpus consists of a collection of songs from various genres including mainly
 Visual analysis of my corpus {.storyboard data-icon="fa-signal"}
 =========================================
 
-### Self-similarity matrices
+### tempos
 
-```{r self sim, echo=FALSE}
-norms_chroma <- list("euclidean", "manhattan", "chebyshev")
-dists_chroma <- list("manhattan", "aitchison", "cosine", "angular")
-summary_chroma <- list("mean", "aitchison_centre", "root_mean_square", "max", "acentre")
+```{r}
 
-norms_timbre <- list("euclidean", "manhattan", "chebyshev")
-dists_timbre <- list("euclidean", "cosine", "angular")
-summary_timbre <- list("mean", "root_mean_square")
+fr <- pop |> slice(1:35) |>
+  add_audio_analysis()
 
-taste2 <-
-  get_tidy_audio_analysis("2QjOHCTQ1Jl3zawyYOpxh6") |>
-  compmus_align(bars, segments) |>
-  select(bars) |>
-  unnest(bars) |>
+qu <- phonk |> slice(1:35) |>
+  add_audio_analysis()
+
+qu2 <- rap |> slice(1:35) |>
+  add_audio_analysis()
+
+comp <-
+  fr |>
+  mutate(category = "Pop") |>
+  bind_rows(qu |> mutate(category = "Phonk"), qu2 |> mutate(category = "Rap"))
+comp <- comp %>% rename(track = track.name)
+Tempo <- comp |>
   mutate(
-    pitches =
-      map(segments,
-        compmus_summarise, pitches,
-        method = summary_chroma[5], norm = norms_chroma[3]
+    sections =
+      map(
+        sections,                                    # sections or segments
+        summarise_at,
+        vars(tempo, loudness, duration),             # features of interest
+        list(section_mean = mean, section_sd = sd)   # aggregation functions
       )
   ) |>
-  mutate(
-    timbre =
-      map(segments,
-        compmus_summarise, timbre,
-        method = summary_timbre[1]
-      )
-  )
+  unnest(sections)
+
+TempoAnimated <- Tempo %>%
+  plot_ly(x = ~tempo, y = ~tempo_section_sd, color = ~tempo, size = ~loudness 
+    ,hoverinfo = "text", text = paste("Track: ", Tempo$track, "<br>",
+                          "Genre: ", Tempo$category, "<br>",
+    #                       "Release date: ", Tempo$track.album.release_date, "<br>",
+                          "Tempo: ", Tempo$tempo, "<br>",
+                          "Loudness: ", Tempo$loudness, "<br>")
+                          # "Time signature: ", Tempo$time_signature)
+  ) %>%
+  add_markers(frame = ~category) %>%
+  layout(title = 'Tempo for Each Artist', xaxis = list(title = "Mean Tempo (bpm)"), yaxis = list(range = c(0,10), title = 'SD Tempo')) %>%
+  animation_opts(frame = 2000, 
+                 transition = 100,
+                 easing = "linear") %>%
+  animation_slider(currentvalue = list(prefix = NULL,
+                                       font = list(color = "a9dea9", size = 20)))
+
+TempoAnimated
 ```
-
-```{r self sim matrices, echo=FALSE}
-self_sim <- bind_rows(
-  taste2 |> 
-    compmus_self_similarity(pitches, dists_chroma[1]) |> 
-    mutate(d = d / max(d), type = "Chroma"),
-  taste2 |> 
-    compmus_self_similarity(timbre, dists_timbre[2]) |> 
-    mutate(d = d / max(d), type = "Timbre")
-) |>
-  mutate() |> 
-  ggplot(
-    aes(
-      x = xstart + xduration / 2,
-      width = xduration,
-      y = ystart + yduration / 2,
-      height = yduration,
-      fill = d
-    )
-  ) +
-  geom_tile() +
-  coord_fixed() +
-  facet_wrap(~type) +
-  scale_fill_viridis_c(option = "mako", guide = "none") +
-  theme_classic() + 
-  labs(x = "", y = "")
-
-self_sim_ggplotly <- ggplotly(self_sim, domain = list(x=c(0,1), y=c(0.6,1)))
-
-parts <- data.frame(
-  Chroma = c("0:00 - 0:23", "0:23 - 0:49", "0:49 - 1:12", "1:12 - 1:20", "1:20 - 2:28", ""), 
-  Timbre = c("0:00 - 0:23", "0:23 - 1:12", "", "1:12 - 1:20", "1:20 - 1:24", "1:24 - 1:28"),
-  Chroma2 = c("", "2:28 - 3:08", "3:08 - 4:11", "", "4:11 - 4:19", ""), 
-  Timbre2 = c("1:28 - 2:28", "2:28 - 3:08", "3:08 - 3:35", "3:35 - 4:11", "4:11 - 4:19", ""))
-```
-
-```{r subplot, echo=FALSE}
-parts_table <- plot_ly(
-    type = 'table',
-    domain = list(x=c(0,1), y=c(0,0.4)),
-    header = list(values = c("Chroma", "Timbre", "Chroma", "Timbre")),
-    cells = list(values = rbind(parts$Chroma, parts$Timbre, parts$Chroma2, parts$Timbre2), height=25)
-  )
-subplot(self_sim_ggplotly, parts_table, nrows=2)
-```
-
 ***
+**Explanation**  
+Here you can see the mean tempo, the deviation of each song from that mean tempo, the loudness in size
+and the bpm in the color of the point. The biggest deviation can be found in the Rap category as there are some outliers at the top of the plot.
 
-A self-similarity matrix is a visual representation of the similarity between different sections of a musical recording. The two self-similarity matrices, each summarised at the bar level but with axes in seconds, illustrate pitch- and timbre-based self-similarity within the song sweater weather.
 
 
 Chroma features {.storyboard data-icon="ion-music-note"}

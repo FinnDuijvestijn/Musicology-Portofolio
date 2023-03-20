@@ -163,29 +163,26 @@ This boxplot shows that interestingly enough, rap seems to have the highest danc
 
 
 
-### Track-Level Summary
+### Tempo & Genre
 
-```{r summary_1}
-bebop <-
-  get_playlist_audio_features(
-    "thesoundsofspotify",
-    "55s8gstHcaCyfU47mQgLrB"
-  ) |>
-  slice(1:30) |>
-  add_audio_analysis()
-bigband <-
-  get_playlist_audio_features(
-    "thesoundsofspotify",
-    "2cjIvuw4VVOQSeUAZfNiqY"
-  ) |>
-  slice(1:30) |>
-  add_audio_analysis()
-jazz <-
-  bebop |>
-  mutate(genre = "Bebop") |>
-  bind_rows(bigband |> mutate(genre = "Big Band"))
+```{r}
 
-jazz1 <- jazz |>
+fr <- pop |> slice(1:35) |>
+  add_audio_analysis()
+
+qu <- phonk |> slice(1:35) |>
+  add_audio_analysis()
+
+qu2 <- rap |> slice(1:35) |>
+  add_audio_analysis()
+
+comp <-
+  fr |>
+  mutate(category = "Pop") |>
+  bind_rows(qu |> mutate(category = "Phonk"), qu2 |> mutate(category = "Rap"))
+comp <- comp %>% rename(track = track.name)
+
+Tempo <- comp |>
   mutate(
     sections =
       map(
@@ -195,30 +192,37 @@ jazz1 <- jazz |>
         list(section_mean = mean, section_sd = sd)   # aggregation functions
       )
   ) |>
-  unnest(sections) |>
-  ggplot(
-    aes(
-      x = tempo,
-      y = tempo_section_sd,
-      colour = genre,
-      alpha = loudness
-    )
-  ) +
-  geom_point(aes(size = duration / 60)) +
-  geom_rug() +
-  theme_minimal() +
-  ylim(0, 5) +
-  labs(
-    x = "Mean Tempo (bpm)",
-    y = "SD Tempo",
-    colour = "Genre",
-    size = "Duration (min)",
-    alpha = "Volume (dBFS)"
-  )
+  unnest(sections)
+
+TempoAnimated <- Tempo %>%
+  plot_ly(x = ~tempo, y = ~tempo_section_sd, color = ~tempo, size = ~loudness 
+    ,hoverinfo = "text", text = paste("Track: ", Tempo$track, "<br>",
+                          "Genre: ", Tempo$category, "<br>",
+    #                       "Release date: ", Tempo$track.album.release_date, "<br>",
+                          "Tempo: ", Tempo$tempo, "<br>",
+                          "Loudness: ", Tempo$loudness, "<br>")
+                          # "Time signature: ", Tempo$time_signature)
+  ) %>%
+  add_markers(frame = ~category) %>%
+  layout(title = 'Tempo for Each Artist', xaxis = list(title = "Mean Tempo (bpm)"), yaxis = list(range = c(0,10), title = 'SD Tempo')) %>%
+  animation_opts(frame = 2000, 
+                 transition = 100,
+                 easing = "linear") %>%
+  animation_slider(currentvalue = list(prefix = NULL,
+                                       font = list(color = "a9dea9", size = 20)))
+
+TempoAnimated
 ```
 
-```{r summary_2}
-jazz2 <- jazz |>
+***
+**Explanation**  
+Here you can see the mean tempo, the deviation of each song from that mean tempo, the loudness in size
+and the bpm in the color of the point. The biggest deviation can be found in the Rap category as there are some outliers at the top of the plot. Pop seems to have the most stable bpm range: more than 50% lies within the 120-140 bpm range.
+
+
+### Timbre & Genre
+```{r}
+viopl <- comp |>
   mutate(
     timbre =
       map(
@@ -228,24 +232,22 @@ jazz2 <- jazz |>
         method = "mean"
       )
   ) |>
-  select(genre, timbre) |>
+  select(category, timbre) |>
   compmus_gather_timbre() |>
-  ggplot(aes(x = basis, y = value, fill = genre)) +
+  ggplot(aes(x = basis, y = value, fill = category)) +
   geom_violin() +
   scale_fill_viridis_d() +
   labs(x = "Spotify Timbre Coefficients", y = "", fill = "Genre")
 
-# subplot(jazz1, jazz2, nrows = 2)
-jazz1 / jazz2
+ggplotly(viopl)
 ```
 
 ***
 
-The selection of an appropriate corpus is essential to effectively achieve research objectives. In this study, a broad corpus was chosen that included diverse data related to the research question. However, the large volume of data made it difficult to identify significant patterns or trends that could adequately address the research question.
-
-To overcome this challenge, the decision was made to focus on the outliers in the corpus. Specifically, the analysis focused on the extreme cases that were most divergent from the norm in terms of a specific timbre component. This approach allowed for the isolation and study of the outliers, leading to valuable insights and a better understanding of the factors contributing to their unique timbre characteristics. Ultimately, this approach strengthened the analysis and enhanced the quality of the research findings.
-
+**Explanation**
 Timbre, the quality of sound that distinguishes different musical instruments, is a crucial aspect of music. The analysis of timbre is often performed using spectral content, which measures the relative strengths of various frequency components that make up the sound. In this study, the focus was on a specific timbre component, which was used to isolate and study the outliers in the corpus.
+
+For every 12 levels of timbre used by Spotify API I have plotted the range for first 25 songs from each of the three genre-playlists: Pop, Phonk and Rap.
 
 
 
