@@ -254,6 +254,8 @@ Chroma features {.storyboard data-icon="ion-music-note"}
 
 ### Chromatograms
 
+<!-- <font style="font-size: 30px">1. Counting Stars -- 2. Close Eyes -- 3. Invincible</font> -->
+
 ```{r pop-chroma}
 ewf <-
   get_tidy_audio_analysis("2tpWsVSb9UEmDRxAl1zhX1") |>
@@ -285,7 +287,9 @@ ewf_plot <- ewf |>
     )
   ) +
   geom_tile() +
-    geom_vline(xintercept = 53, color = "red") +
+    geom_vline(xintercept = 21.5, color = "red") +
+    geom_vline(xintercept = 77.5, color = "red") +
+    geom_vline(xintercept = 206.5, color = "red") +
   # labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Pop: 'Counting Stars' by 'OneRepublic'") +
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   # theme_minimal() +
@@ -303,7 +307,7 @@ loveontop_plot <- loveontop |>
     )
   ) +
   geom_tile() +
-  geom_vline(xintercept = 184, color = "red") +
+  geom_vline(xintercept = 70, color = "red") +
   # labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Phonk: 'Close Eyes' by 'DRVST'") +
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   theme(legend.position="none") +
@@ -321,9 +325,8 @@ allineed_plot <- allineed |>
     )
   ) +
   geom_tile() +
-  geom_vline(xintercept = 137, color = "red") +
-  geom_vline(xintercept = 186, color = "red") +
-  # labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Rap: 'Invincible' by 'Pop Smoke'") +
+  geom_vline(xintercept = 23.5, color = "red") +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "1.Pop: 'Counting Stars' by 'OneRepublic' --- 2. Phonk: 'Close Eyes' by 'DRVST' --- 3. Rap: 'Invincible' by 'Pop Smoke'") +
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   theme(legend.position="none") +
   scale_fill_viridis_c(option = "mako") 
@@ -345,8 +348,6 @@ Interestingly there seems to be some overlap between Pop and Phonk specific song
 
 ### Cepstrograms
 
-<!-- #### Pop: "Counting Stars" by "OneRepublic" -->
-<!-- <font style="font-size: 25px">Pop: "Counting Stars" by "OneRepublic"</font> -->
 
 ```{r timbre_pop}
 # Cepstrograms
@@ -384,32 +385,9 @@ cep_pop <- bzt |>
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   scale_fill_viridis_c() +
   theme_classic()+
-  # ggtitle("Timbre")+
-  theme(plot.title = element_text(hjust = 0.5))
-
-# # SELF SIMILARITY MATRIX
-# bzt |>
-#   compmus_self_similarity(timbre, "cosine") |>
-#   ggplot(
-#     aes(
-#       x = xstart + xduration / 2,
-#       width = xduration,
-#       y = ystart + yduration / 2,
-#       height = yduration,
-#       fill = d
-#     )
-#   ) +
-#   geom_tile() +
-#   coord_fixed() +
-#   scale_fill_viridis_c(guide = "none") +
-#   theme_classic() +
-#   labs(x = "", y = "")+
-#   ggtitle("Timbre")+
-#   theme(plot.title = element_text(hjust = 0.5))
+  ggtitle("1.Pop: 'Counting Stars' by 'OneRepublic' --- 2. Phonk: 'Close Eyes' by 'DRVST' --- 3. Rap: 'Invincible' by 'Pop Smoke'")
 ```
 
-<!-- #### Phonk: "Close Eyes" by "DVRST" -->
-<!-- <font style="font-size: 25px">Phonk: "Close Eyes" by "DVRST"</font> -->
 
 ```{r timbre_phonk}
 # Cepstrograms
@@ -446,33 +424,8 @@ cep_phonk <- bzt |>
   geom_tile() +
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   scale_fill_viridis_c() +
-  theme_classic()+
-  # ggtitle("Timbre")+
-  theme(plot.title = element_text(hjust = 0.5))
-
-# SELF SIMILARITY MATRIX
-# bzt |>
-#   compmus_self_similarity(timbre, "cosine") |>
-#   ggplot(
-#     aes(
-#       x = xstart + xduration / 2,
-#       width = xduration,
-#       y = ystart + yduration / 2,
-#       height = yduration,
-#       fill = d
-#     )
-#   ) +
-#   geom_tile() +
-#   coord_fixed() +
-#   scale_fill_viridis_c(guide = "none") +
-#   theme_classic() +
-#   labs(x = "", y = "")+
-#   ggtitle("Timbre")+
-#   theme(plot.title = element_text(hjust = 0.5))
+  theme_classic()
 ```
-
-<!-- #### Rap: "Invincible" by "Pop Smoke" -->
-<!-- <font style="font-size: 25px">Rap: "Invincible" by "Pop Smoke"</font> -->
 
 
 ```{r timbre_rap}
@@ -511,29 +464,9 @@ cep_rap <- bzt |>
   labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
   scale_fill_viridis_c() +
   theme_classic()+
-  # ggtitle("Timbre")+
   theme(plot.title = element_text(hjust = 0.5))
 
 subplot(cep_pop, cep_phonk, cep_rap, nrows = 3)
-# SELF SIMILARITY MATRIX
-# bzt |>
-#   compmus_self_similarity(timbre, "cosine") |>
-#   ggplot(
-#     aes(
-#       x = xstart + xduration / 2,
-#       width = xduration,
-#       y = ystart + yduration / 2,
-#       height = yduration,
-#       fill = d
-#     )
-#   ) +
-#   geom_tile() +
-#   coord_fixed() +
-#   scale_fill_viridis_c(guide = "none") +
-#   theme_classic() +
-#   labs(x = "", y = "")+
-#   ggtitle("Timbre")+
-#   theme(plot.title = element_text(hjust = 0.5))
 ```
 
 ***
@@ -755,18 +688,19 @@ This is a keygram from one of the last songs from _XXXTENTACION_: [SAD!](https:/
 ### temporal features
 
 ```{r}
-get_tidy_audio_analysis('6PJasPKAzNLSOzxeAH33j2') |> 
-    tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |> 
+tempf <- get_tidy_audio_analysis('5fEB6ZmVkg63GZg9qO86jh') |> 
+    tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) |> 
     ggplot(aes(x = time, y = bpm, fill = power)) + 
     geom_raster() + 
     scale_fill_viridis_c(guide = 'none') +
     labs(x = 'Time (s)', y = 'Tempo (BPM)') +
     theme_classic()
+ggplotly(tempf)
 ```
 
 ***
 
-The Fourier-based tempogram at the left is an attempt to use Spotify's API to analyse the tempo of Graveola's 'Samba de outro lugar'. Overall, Spotify estimates that the tempo of this track is 124 BPM, but looking in more detail at the tempogram, we see that the different sections of the piece lead to different strengths of so-called *tempo octaves*. In some freer-form sections of the piece, tempo estimation is almost impossible.
+The Fourier-based tempogram at the left is an attempt to use Spotify's API to analyse the tempo of _PARTYNEXTDOOR_: [Break from Toronto](https://open.spotify.com/track/5fEB6ZmVkg63GZg9qO86jh?si=83b0b977075048e2) Overall, Spotify estimates that the tempo of this track is 117 BPM, looking in more detail at the tempogram, we can see that this makes sense.The bright yellow line does indeed lie around 117 BPM, however we can also see that there are some indicators that higher and lower tempos are also included in the beginning. These different sections of the piece lead to different strengths of so-called *tempo octaves*. This freer-form section of the piece can make it so tempo estimation is a little harder.
 
 
 
