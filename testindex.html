@@ -22,7 +22,7 @@
 window.FlexDashboardComponents = [];
 </script>
 
-<script src="testindex_files/header-attrs-2.20/header-attrs.js"></script>
+<script src="testindex_files/header-attrs-2.21/header-attrs.js"></script>
 <script src="testindex_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="testindex_files/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet" />
@@ -31,8 +31,8 @@ window.FlexDashboardComponents = [];
 <script src="testindex_files/bs3compat-0.4.2/tabs.js"></script>
 <script src="testindex_files/bs3compat-0.4.2/bs3compat.js"></script>
 <link href="testindex_files/flexdashboard-css-0.6.1/flexdashboard-css.css" rel="stylesheet" />
-<link href="testindex_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="testindex_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="testindex_files/font-awesome-6.2.1/css/all.min.css" rel="stylesheet" />
+<link href="testindex_files/font-awesome-6.2.1/css/v4-shims.min.css" rel="stylesheet" />
 <script src="testindex_files/sly-1.6.1/sly.min.js"></script>
 <script src="testindex_files/stickytableheaders-0.1.19/jquery.stickytableheaders.min.js"></script>
 <link href="testindex_files/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet" />
@@ -171,6 +171,10 @@ html, body {
 </div><!--/.container-->
 </div><!--/.navbar-->
 
+<img class="mobile-figure" data-mobile-figure-id=fig1 src="testindex_files/figure-html/halloween-1.mb.png" />
+<img class="mobile-figure" data-mobile-figure-id=fig2 src="testindex_files/figure-html/features-1.mb.png" />
+<img class="mobile-figure" data-mobile-figure-id=fig3 src="testindex_files/figure-html/workouts-1.mb.png" />
+<img class="mobile-figure" data-mobile-figure-id=fig4 src="testindex_files/figure-html/unnamed-chunk-3-1.mb.png" />
 <script type="text/javascript">
 
 
@@ -1876,14 +1880,134 @@ including mainly Pop, Rap, and Phonk (which is a sub</p>
 <hr />
 </div>
 </div>
-<div id="visual-analysis-of-my-corpus" class="section level1 storyboard"
-data-icon="fa-signal">
-<h1 class="storyboard">Visual analysis of my corpus</h1>
-<div id="two-mozart-chordograms-piano-sonata-no.-11-and-mozart-phonk"
-class="section level3">
-<h3>Two <strong>Mozart</strong> chordograms: <em>Piano Sonata
-No. 11</em> and <em>MOZART PHONK</em></h3>
+<div id="classification" class="section level1 storyboard"
+data-icon="fa-pie-chart">
+<h1 class="storyboard">Classification</h1>
+<div id="dendogram-heatmap" class="section level3">
+<h3>Dendogram &amp; heatmap</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<p><img src="testindex_files/figure-html/halloween-1.png" width="576" data-figure-id=fig1 /></p>
 <hr />
+<p><strong>Explanation</strong></p>
+<p>The dendrogram and heatmap breaks the Pop playlist into small
+clusters and shows us which musical features are most intense for each
+song. These musical characteristics/features are on the x-axis and the
+songs themselves can be seen on the y-axis. It consist of the first 20
+songs of the Pop playlist since it would not be readable to apply a
+dendrogram for the entire playlist. Since these songs all belong to the
+same genre/playlist I wanted to see if the algorithm could subdivide
+them even more.</p>
+<p>Something I found interesting, is that it doesn’t seem that the
+algorithm takes into account which artist is on the song. This is
+because it can be seen that Post Malone has namely two songs within the
+dendrogram which are not on the same subcluster: “Wow” and “Goodbyes”.
+Although both “Wow” and “Goodbyes” were created by Post Malone and
+belong to different subclusters within the same main cluster, their
+shared membership in the main cluster still suggests a degree of
+relationship between them.</p>
+</div>
+<div id="ranking-important-features" class="section level3">
+<h3>Ranking important features</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<p><img src="testindex_files/figure-html/features-1.png" width="576" data-figure-id=fig2 /></p>
+<hr />
+<p><strong>Explanation</strong></p>
+<p>Random forests are a powerful variant of the decision-tree. Although
+no single classifier works best for all problems, in practice, random
+forests are among the best-performing off-the-shelf algorithms for many
+real-world use cases. Random forests also give us a ranking of feature
+importance, which is a measure of how useful each feature in the recipe
+was for distinguishing the ground-truth classes.</p>
+<p>Since random forests also give us a ranking of feature importance, I
+decided to use this to find out which features ranked highest for
+distinguishing whether a song was part of the Pop, Phonk or Rap genre.
+As can be seen there are two features which seem to have a major impact
+on deciding to which genre a song belongs: Instrumentalness and
+duration. This makes sense since almost all Phonk songs for example have
+a relatively short duration of the song, but are very instrumental.
+Interestingly the rest of the rest of the features seem to not play as
+big of a role in this decision.</p>
+</div>
+<div id="confidence-matrix" class="section level3">
+<h3>Confidence Matrix</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<p><img src="testindex_files/figure-html/workouts-1.png" width="576" data-figure-id=fig3 /></p>
+<hr />
+<p><strong>Explanation</strong></p>
+<p>Based on the features which can be seen on the previous page, I made
+a model to predict whether a song belongs in the Pop genre, the Phonk
+genre or the Rap genre. Again the features that were the most important
+were: Instrumentalness and duration.</p>
+<p>Here you can see how well the model did; the number in the cells show
+for every combination (the three true categories and how the three
+categories were predicted) how often this was the case. For example, the
+first value (upper left corner) shows the number of times the model
+predicted correctly that a song was from the Phonk genre, the value
+immediately below shows for every Phonk song the number of times it
+predicted it was a Pop song and underneath that is the times that it
+predicted it as a Rap song. Surprisingly classifying Pop songs seems to
+be the easiest for the algorithm. Songs from both the Phonk and Rap
+genre seem to be harder to classify for the algorithm since these have a
+lot less correct predictions.</p>
+<p>Below is a table of the actual evaluation metrics showing the
+performance of the classifier.</p>
+<p><strong>Evaluation model using all features</strong></p>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">class</th>
+<th align="right">precision</th>
+<th align="right">recall</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Phonk</td>
+<td align="right">0.7500000</td>
+<td align="right">0.30</td>
+</tr>
+<tr class="even">
+<td align="left">Pop</td>
+<td align="right">0.3666667</td>
+<td align="right">0.55</td>
+</tr>
+<tr class="odd">
+<td align="left">Rap</td>
+<td align="right">0.4090909</td>
+<td align="right">0.45</td>
+</tr>
+</tbody>
+</table>
+<p>Precision is the proportion of accurately predicted songs from all
+songs the model predicted to be from that genre. Recall shows from all
+songs that are actually from that genre the proportion that got
+predicted accurately.</p>
+</div>
+<div id="two-most-important-features-genre" class="section level3">
+<h3>Two most important features &amp; Genre</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<p><img src="testindex_files/figure-html/unnamed-chunk-3-1.png" width="576" data-figure-id=fig4 /></p>
+<hr />
+<p><strong>Explanation</strong></p>
+<p>Since the feature ranking showed us that Instrumentalness and
+Duration were the two most important features for classifying a song to
+be within one of the three genres: Pop, Phonk and Rap, I decided to make
+a more interpretable plot to be able to see the actual differences
+between the genres for those exact features.</p>
 </div>
 </div>
 <div id="what-did-i-find" class="section level1 storyboard"
@@ -1891,107 +2015,12 @@ data-icon="fa-spotify">
 <h1 class="storyboard">What did I find</h1>
 <div id="conclusion" class="section level3" data-commentary-width="450">
 <h3>Conclusion</h3>
-<p><font style="font-size: 30px">Wrap up of my corpus analysis</font> To
-conclude the analysis of my corpus, I would like to highlight a few key
-takeaways that I gained from creating this portfolio. I expected a lot
-of differences between all of the musical characteristic from the three
-genres: Pop, Phonk and Rap. As I mentioned in the introduction of my
-portfolio, I listen to the songs from these various genres under
-different circumstances. Therefore I would’ve guessed that there would
-be a lot of different features of these songs, which would make them
-appealing to listen to during different activities. However to my
-surprise I found out that the these differences were mostly only slight
-changes in either tempo, timbre or pitch. It was really interesting to
-find out that all these little changes in songs added up to make a song
-fit into a certain genre instead of all in the same one.</p>
-<p>First of all seeing the histogram of the different keys used for each
-genre and seeing that there were big differences, I expected all other
-measurements to have the same outcome. This expectation turned out to be
-not really accurate for all musical characteristic comparisons.</p>
-<p>One example of these small differences was when analyzing the
-different tempi of each genre, they all seemed to fall almost perfectly
-into the same range with an average of 120-140 BPM. Where the difference
-as little as 5 BPM on average was the difference between complete
-different genres. But when looking deeper into it, I found that the most
-noticeable thing wasn’t the difference of the average tempo between
-genres. It was the distribution of songs for each genre and the
-deviation of tempo within the songs itself. For example we saw that the
-Rap genre had some major outliers which were deviating from the mean
-tempo of the song. While the Pop songs where distributed with almost
-like a normal distribution type shape. On the other hand, Phonk songs
-could almost be dived into one of three tempos.</p>
-<p>Furthermore I expected to see a lot more similarities between Rap and
-Phonk, since both of these tend to have a similar type beat and rhythm:
-heavy and fast paced. While this was sometimes the case, it definitely
-was not always true. For example, while the energy of Phonk was really
-high on average, the energy of Rap was way lower than I expected it to
-be especially in comparison to Pop for example. It was still not low
-overall but compared to the genres I was analyzing it just seemed lower
-than expected.</p>
-<p>Something else noticeable was seeing that according to the spotify
-API, the Rap genre includes the most danceable songs on average. This
-was unexpected too, since Pop is know for it’s dancing songs. Not only
-was Rap the most danceable genre, Pop was actually the least
-danceable.</p>
-<p>Interestingly I did find that for most comparisons Pop was overall
-the most balanced and evenly distributed with its features. The spread
-of datapoints was usually the highest which would lead to a more
-balanced representation of songs. I also felt like the Phonk genre was
-usually the least balanced with the least amount of spread in it’s
-datapoints. Rap seemed to fall somewhere in the middle of the two Genres
-generally speaking.</p>
-<p>Moreover I found it interesting to see how all of the chroma features
-had different impacts on the structure of songs and how it could effect
-the way a music piece was perceived. While not all songs had a truly
-clear structural representation for each chroma representation, like for
-the keygram, it was still interesting to see the differences between
-songs from each genre.</p>
-<p>All in all have learnt about my taste in music and the different type
-of songs I listen to. I have gained a lot of insight into the different
-musical characteristics which play major roles into shaping music pieces
-into the way they are and now also now which ones are important in the
-genres I listen to.</p>
+<p>ent genres and their respective subcultures.</p>
 <hr />
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
-<p><img src="pics/pop.jpg" width="100%" height="100%" data-figure-id=fig1 /><img src="pics/phonk.jpg" width="100%" height="100%" data-figure-id=fig1 /><img src="pics/rap.jpg" width="100%" height="100%" data-figure-id=fig1 /></p>
-</div>
-<div id="discussion" class="section level3" data-commentary-width="450">
-<h3>Discussion</h3>
-<p><font style="font-size: 30px">What’s next?</font></p>
-<p>While we have analyzed the playlist data and have found that there
-are several overlapping features and differences between the different
-genres, it is important to note that these playlists are constantly
-updating, so they may not be entirely accurate in the future.</p>
-<p>One interesting aspect to consider when analyzing the overlapping
-songs between genres is the subgenres within each main genre. For
-example, within the broad category of “Rap” there are many subgenres
-such as Gangsta rap, Alternative hip hop, and even Trap, which
-coincidentally also has a lot overlapping features with Phonk.</p>
-<p>Analyzing the subgenres within each main genre could shed light on
-some of the overlapping songs and outliers in the data. It is possible
-that some of the overlapping songs belong to subgenres that are closely
-related, while others may be outliers that do not fit neatly into any
-one category. By analyzing the subgenres, we may be able to gain a more
-nuanced understanding of the relationship between different genres and
-their respective fan bases.</p>
-<p>Furthermore, analyzing subgenres could also help to identify emerging
-trends and new subgenres that are gaining popularity. For example, the
-rise of subgenres such as “indie pop” and “trap music” in recent years
-has reshaped the landscape of popular music and could be reflected in
-the Pop playlist data.</p>
-<p>However, it is important to note that analyzing subgenres would
-require a more granular approach to data collection and analysis, which
-may not be feasible or practical for all research projects. Nonetheless,
-it is an interesting avenue for future research and could lead to a
-deeper understanding of the complex relationships between different
-genres and their respective subcultures.</p>
-<hr />
-<div class="knitr-options" data-fig-width="576" data-fig-height="460">
-
-</div>
-<p><img src="pics/pop.jpg" width="100%" height="100%" data-figure-id=fig1 /><img src="pics/phonk.jpg" width="100%" height="100%" data-figure-id=fig1 /><img src="pics/rap.jpg" width="100%" height="100%" data-figure-id=fig1 /></p>
+<p><img src="pics/pop.jpg" width="100%" height="100%" data-figure-id=fig5 /><img src="pics/phonk.jpg" width="100%" height="100%" data-figure-id=fig5 /><img src="pics/rap.jpg" width="100%" height="100%" data-figure-id=fig5 /></p>
 </div>
 </div>
 
