@@ -58,96 +58,63 @@ Visual analysis of my corpus {.storyboard data-icon="fa-signal"}
 
 ### Two **Mozart** chordograms: *Piano Sonata No. 11* and *MOZART PHONK*
 
-
-***
-**Explanation**
-In the Phonk playlist there is the song: [MOZART PHONK](https://open.spotify.com/track/4uA4FfwW15P8PguZ1uOlpl?si=a6f5ace5b3984bf8), from which the chordogram can be seen in the top plot. I thought It would be fun to compare the chordogram of that song with the actual song from mozart: [Piano Sonata No. 11](https://open.spotify.com/track/16walLqBosZ5bHmKNGMHts?si=9cd8a36311e949ac), which can be seen in the plot below.
-
-
-Chroma features {.storyboard data-icon="ion-music-note"}
-=========================================
-
-### Self-similarity matrices
-
-```{r self sim, echo=FALSE}
-norms_chroma <- list("euclidean", "manhattan", "chebyshev")
-dists_chroma <- list("manhattan", "aitchison", "cosine", "angular")
-summary_chroma <- list("mean", "aitchison_centre", "root_mean_square", "max", "acentre")
-
-norms_timbre <- list("euclidean", "manhattan", "chebyshev")
-dists_timbre <- list("euclidean", "cosine", "angular")
-summary_timbre <- list("mean", "root_mean_square")
-
-taste2 <-
-  get_tidy_audio_analysis("2QjOHCTQ1Jl3zawyYOpxh6") |>
-  compmus_align(bars, segments) |>
-  select(bars) |>
-  unnest(bars) |>
-  mutate(
-    pitches =
-      map(segments,
-        compmus_summarise, pitches,
-        method = summary_chroma[5], norm = norms_chroma[3]
-      )
-  ) |>
-  mutate(
-    timbre =
-      map(segments,
-        compmus_summarise, timbre,
-        method = summary_timbre[1]
-      )
-  )
-```
-
-```{r self sim matrices, echo=FALSE}
-self_sim <- bind_rows(
-  taste2 |> 
-    compmus_self_similarity(pitches, dists_chroma[1]) |> 
-    mutate(d = d / max(d), type = "Chroma"),
-  taste2 |> 
-    compmus_self_similarity(timbre, dists_timbre[2]) |> 
-    mutate(d = d / max(d), type = "Timbre")
-) |>
-  mutate() |> 
-  ggplot(
-    aes(
-      x = xstart + xduration / 2,
-      width = xduration,
-      y = ystart + yduration / 2,
-      height = yduration,
-      fill = d
-    )
-  ) +
-  geom_tile() +
-  coord_fixed() +
-  facet_wrap(~type) +
-  scale_fill_viridis_c(option = "mako", guide = "none") +
-  theme_classic() + 
-  labs(x = "", y = "", title = "'MOZART PHONK' vs 'Piano Sonata No.' 11")
-
-subplot(self_sim, self_sim, self_sim, nrows=3)
-```
-
-
-***
-**Explanation**  
-
-
-
-### Keygram of __XXXTENTACION : SAD!__
-
-
-
 ***
 
-In the Phonk playlist there is the song: 
+
 
 
 What did I find {.storyboard data-icon="fa-spotify"}
 =========================================
 
-### Conclusion
+### Conclusion {data-commentary-width=450}
+
+<font style="font-size: 30px">Wrap up of my corpus analysis</font> 
+
+To conclude the analysis of my corpus, I would like to highlight a few key takeaways that I gained from creating this portfolio. I expected a lot of differences between all of the musical characteristic from the three genres: Pop, Phonk and Rap. As I mentioned in the introduction of my portfolio, I listen to the songs from these various genres under different circumstances. Therefore I would’ve guessed that there would be a lot of different features of these songs, which would make them appealing to listen to during different activities. However to my surprise I found out that the these differences were mostly only slight changes in either tempo, timbre or pitch. It was really interesting to find out that all these little changes in songs added up to make a song fit into a certain genre instead of all in the same one.
+
+First of all seeing the histogram of the different keys used for each genre and seeing that there were big differences, I expected all other measurements to have the same outcome. This expectation turned out to be not really accurate for all musical characteristic comparisons.
+
+One example of these small differences was when analyzing the different tempi of each genre, they all seemed to fall almost perfectly into the same range with an average of 120-140 BPM. Where the difference as little as 5 BPM on average was the difference between complete different genres. But when looking deeper into it, I found that the most noticeable thing wasn’t the difference of the average tempo between genres. It was the distribution of songs for each genre and the deviation of tempo within the songs itself. For example we saw that the Rap genre had some major outliers which were deviating from the mean tempo of the song. While the Pop songs where distributed with almost like a normal distribution type shape. On the other hand, Phonk songs could almost be dived into one of three tempos.
+
+Furthermore I expected to see a lot more similarities between Rap and Phonk, since both of these tend to have a similar type beat and rhythm: heavy and fast paced. While this was sometimes the case, it definitely was not always true. For example, while the energy of Phonk was really high on average, the energy of Rap was way lower than I expected it to be especially in comparison to Pop for example. It was still not low overall but compared to the genres I was analyzing it just seemed lower than expected. 
+
+Something else noticeable was seeing that according to the spotify API, the Rap genre includes the most danceable songs on average. This was unexpected too,  since Pop is know for it’s dancing songs. Not only was Rap the most danceable genre, Pop was actually the least danceable. 
+
+Interestingly I did find that for most comparisons Pop was overall the most balanced and evenly distributed with its features. The spread of datapoints was usually the highest which would lead to a more balanced representation of songs. I also felt like the Phonk genre was usually the least balanced with the least amount of spread in it’s datapoints. Rap seemed to fall somewhere in the middle of the two Genres generally speaking.
+
+Moreover I found it interesting to see how all of the chroma features had different impacts on the structure of songs and how it could effect the way a music piece was perceived. While not all songs had a truly clear structural representation for each chroma representation, like for the keygram, it was still interesting to see the differences between songs from each genre.
+
+All in all  have learnt about my taste in music and the different type of songs I listen to. I have gained a lot of insight into the different musical characteristics which play major roles into shaping music pieces into the way they are and now also now which ones are important in the genres I listen to.
+
+***
+
+```{r picture, out.width = '100%', out.height = '100%'}
+knitr::include_graphics("pics/pop.jpg")
+knitr::include_graphics("pics/phonk.jpg")
+knitr::include_graphics("pics/rap.jpg")
+```
 
 
-### Discussion
+### Discussion {data-commentary-width=450}
+
+<font style="font-size: 30px">What's next?</font>
+
+While we have analyzed the playlist data and have found that there are several overlapping features and differences between the different genres, it is important to note that these playlists are constantly updating, so they may not be entirely accurate in the future.
+
+One interesting aspect to consider when analyzing the overlapping songs between genres is the subgenres within each main genre. For example, within the broad category of "Rap" there are many subgenres such as Gangsta rap, Alternative hip hop, and even Trap, which coincidentally also has a lot overlapping features with Phonk.
+
+Analyzing the subgenres within each main genre could shed light on some of the overlapping songs and outliers in the data. It is possible that some of the overlapping songs belong to subgenres that are closely related, while others may be outliers that do not fit neatly into any one category. By analyzing the subgenres, we may be able to gain a more nuanced understanding of the relationship between different genres and their respective fan bases.
+
+Furthermore, analyzing subgenres could also help to identify emerging trends and new subgenres that are gaining popularity. For example, the rise of subgenres such as "indie pop" and "trap music" in recent years has reshaped the landscape of popular music and could be reflected in the Pop playlist data.
+
+However, it is important to note that analyzing subgenres would require a more granular approach to data collection and analysis, which may not be feasible or practical for all research projects. Nonetheless, it is an interesting avenue for future research and could lead to a deeper understanding of the complex relationships between different genres and their respective subcultures.
+
+***
+
+```{r picture2, out.width = '100%', out.height = '100%'}
+knitr::include_graphics("pics/pop.jpg")
+knitr::include_graphics("pics/phonk.jpg")
+knitr::include_graphics("pics/rap.jpg")
+```
+
 

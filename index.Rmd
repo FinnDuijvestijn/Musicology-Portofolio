@@ -94,14 +94,16 @@ p <- awards |>
   facet_wrap(~category) +
   ggtitle("Distribution of keys per genre")
 
-ggplotly(p)
+ggplotly(p) %>% layout(height=800)
 ```
 
 
 ***
 **Explanation**
 
-This bar chart gives a good representation of the differences in key usage between the three genres. Something interesting to look at is the most used key for example, both Phonk and Rap make use of the C# key the most. However it seems that in Rap songs, this key is used almost twice as much as any other key on average, while in Phonk is seems to be relatively balanced with the other keys. It is also interesting to see that Phonk does not have a single instance of the D# key. Finally we can clearly see that out of the three genres, Pop seems to have the most balanced distribution of key usage since it uses all keys and does not really have one major outstanding key.
+This bar chart gives a good representation of the differences in key usage between the three genres. I was wondering if there would be a unique key pattern for each genre and thus if an extremely different type of key distribution would be visible for each of the three genres. I expected to see a great use of the C keys for pop followed by the G and F keys, since I remembered reading that these typically seem to have the highest usage rates. So it was no surprise that this was actually the case. However I was surprised to see how balanced the key distribution of the Pop genre was, since the other genres seem to have a lot more imbalances. Furthermore I expected the Rap genre to have the highest usage of the E key, followed by the A and G keys. However to my surprise it was actually the C# key, and the other keys did not even come close to this usage rate. Since Phonk has roots of Trap and Hip-hop I expected to see a lot of use of the F or G keys. For the F key this was absolutely false, however for the G key it was relatively true since there was a lot of usage of this key. Although it was definitely not the most used key which actually was the C#. 
+
+So something interesting to look at is the most used key per genre, for example both Phonk and Rap make use of the C# key the most. I did expect similar key usage in Phonk and Rap since the style of beat seems similar. However it seems that in Rap songs, this key is used almost twice as much as any other key on average, while in Phonk is seems to be relatively balanced with the other keys. It is also interesting to see that Phonk does not have a single instance of the D# key. Also we can clearly see that out of the three genres, Pop seems to have the most balanced distribution of key usage since it uses all keys and does not really have one major outstanding key.
 
 
 ### Histogram of Tempi
@@ -114,14 +116,17 @@ p <- awards |>
   scale_fill_brewer(palette="PuRd") +
   ggtitle("Distribution of tempi for: Phonk vs Pop vs Rap")
 
-ggplotly(p)
+ggplotly(p) %>% layout(height=800)
 ```
 
 
 ***
 **Explanation**
 
-Interestingly, even though both Phonk and Pop seem to have a preferred tempo between 120 and 130 beats per minute (BPM), the plot shows that Rap likes to have a little faster tempo on average: around 140 BPM. However since the rap playlist includes the least amount of songs out of the three genres, it seems that most songs I like are still around 120-140 BPM. Some other interesting thing to see that all three genres also have a small peak at around 95 BPM, which is a lot slower than the usual tempo of these genres. This could mean that is does in fact not matter whether the tempo of a song is extraordinary for a specific genre, the song could still thrive in a genre regardless of the tempo if the song is still composed very well.
+I thought it would be interesting to have a look at the different tempi for each of the three genres. I expected to see a lot of similarities between them, since most songs I like and listen to typically  seem to have a tempo within a certain range. I do not like extremely fast paced songs because it is hard to track the actual musical characteristics or sing/dance along. However I also don’t like extremely slow music since I tend to get bored easily from song which are classified as slow-songs.
+
+Now for the actual differences in the tempi of the genres, interestingly even though both Phonk and Pop seem to have a preferred tempo between 120 and 130 beats per minute (BPM), the plot shows that Rap likes to have a little faster tempo on average: around 140 BPM. However the plot also does show a slight peak at 140 BPM for both Phonk and Pop. Since the rap playlist includes the least amount of songs out of the three genres, it seems that overall most songs I like are still around 120-140 BPM. 
+Some other interesting thing to see is, that aside from the 140 BPM range , all three genres also have a small peak at around 95 BPM, which is a lot slower than the usual tempo of these genres. This could mean two things, the first one being that is does in fact not matter whether the tempo of a song is extraordinary for a specific genre. The song could still thrive in a genre regardless of the tempo if the song is still composed very well. The second cause could be that these peaks are caused by sub-genres within each of the main three genres, which could then mean that there are some overlapping sub-genres within the three main genres. It would be interesting to look deeper into the sub-genres within each main genre and see if there is some overlapping there which may have caused this kind of behavior.
 
 
 ### Energy & Valence
@@ -159,14 +164,16 @@ facet_wrap(~ category) +    # Separate charts per playlist.
     y = "Energy",
   ) + ggtitle("Relationship between loudness, energy and valence in Phonk, Rap & Pop")
 
-ggplotly(p)
+ggplotly(p) %>% layout(height=800)
 ```
 
 
 ***
 **Explanation**
 
-For this Third plot I decided to compare the valence and energy of The three genres: Pop, Rap and Phonk. Since I wanted to see if there was any correlation between the valence of and the energy of songs. I expected the Pop genre to have the highest average valence out of the three genres, since these songs are often linked to positive vibes. And Phonk to have the highest energy values on average, since this genre is associated with fast, loud and noisy music (as can be seen in the plot where bigger points indicate louder songs). Therefore it was no surprise to see that pop had indead a relatively high valence and Phonk had a relatively high energy. However I was surprised to find out that the Phonk genre actually also scored relatively high on average for valence too, since I assumed this fast and loud type of music would give off an angry vibe. This shows that there could be a correlation between the valence and energy of songs.
+For this plot I decided to compare the valence and energy of The three genres: Pop, Rap and Phonk. Valence measures the positivity of a song's musical content, while energy measures the intensity and activity of a song. These are two important factors that contribute to a song's overall mood and emotional impact. I wanted to see if there was any correlation between the valence and the energy of songs. I thought it would also be interesting to see if the songs of these different genres would differ massively in overall mood and emotional impact. 
+
+The distribution interestingly immediately shows that like for the distribution of keys, Pop songs seem to be the most balanced and equally distributed. While Phonk songs all seem to lie towards the top of the energy scale and Rap songs seem to lie more around the middle of the energy scale. I expected the Pop genre to have the highest average valence out of the three genres, since these songs are often linked to positive vibes. And Phonk to have the highest energy values on average, since this genre is associated with fast, loud and noisy music (as can be seen in the plot where bigger points indicate louder songs). Therefore it was kind of surprising to see that pop had actually a really balanced valence distribution. What surprised me even more was to see that this was the case for all three genres, they were all pretty balanced towards the valence scale. Although it was no surprise that Phonk had a relatively high energy on average, I was surprised to find out that the Phonk genre actually also scored relatively high on average for valence too, since I assumed this fast and loud type of music would give off an angry vibe. I also expected to see Rap quite high on the energy scale since there are a lot of fast paced heavy beat rap songs out there, but this was not exactly the case. At least by comparison to the other two genres Rap really seemed to have a slightly lower energy score on average. However Rap songs do seem to have a way higher correlation between energy and valence, since this is the only graph where really a clear linear trend can be seen between these two measurements. This shows that there could be a correlation between the valence and energy of songs, however it is very dependent on the genre it seems.
 
 
 ### Dancebility
@@ -178,14 +185,16 @@ p <- awards |>
   scale_fill_brewer(palette="PuRd") +
   ggtitle("Dancebility: Phonk vs Pop vs Rap")
 
-ggplotly(p)
+ggplotly(p) %>% layout(height=800)
 ```
 
 
 ***
 **Explanation**
 
-This boxplot shows that interestingly enough, rap seems to have the highest danceability value on average according to spotify's measure. I would personally have guessed that Pop songs would have the highest danceability by a mile, so seeing Pop not scoring as high surprised me. I wonder what makes a song danceable by defenition of spotify, it would be interesting to see the exact features of this.
+This boxplot shows that interestingly enough, rap seems to have the highest danceability value on average according to Spotify’s measure. Danceability is a measure of how suitable a track is for dancing, based on factors such as rhythm stability, beat strength, and overall tempo.
+
+I would personally have guessed that Pop songs would have the highest danceability by a mile, since Pop music is often associated with upbeat, danceable tracks that are popular in clubs and on dancefloors. So seeing that Pop only had a median score of 0.69 for danceability, while Phonk had a median of 0.70 and Rap even a median as high as 0.79, was really surprising to me. I expected that Rap and Phonk music would have prioritized other musical characteristics over danceability, such as lyricism, groove, or atmospheric qualities. I also thought danceability could be influenced by energy scores, which is why I expected Phonk to do quite well. However, as can be seen in the graph, Rap wins the danceability battle by quite a big margin. I think it is really interesting to see Rap score so high, especially considering that rap had really low energy levels in comparison to the other two.
 
 
 
@@ -237,15 +246,23 @@ TempoAnimated <- Tempo %>%
   animation_slider(currentvalue = list(prefix = NULL,
                                        font = list(color = "a9dea9", size = 20)))
 
-TempoAnimated
+ggplotly(TempoAnimated) %>% layout(height=800)
 ```
 
 
 ***
 **Explanation** 
 
-Here you can see the mean tempo, the deviation of each song from that mean tempo, the loudness in size
-and the bpm in the color of the point. The biggest deviation can be found in the Rap category as there are some outliers at the top of the plot. Pop seems to have the most stable bpm range: more than 50% lies within the 120-140 bpm range.
+Here you can see the mean tempo, the deviation of each song from its mean tempo, the loudness in the size of the datapoint and the bpm also in the color of the point for extra clarity. The slider can be moved to display all the elements of the selected genre, or the play button can be pressed to display each genre after each other like a slideshow.
+
+This graph is useful to see why the histogram of tempi was distributed the way it was, as well as identifying all outliers which may have caused deviations from the standard tempo range for a genre. It is also intriguing to examine songs that exhibit variations in tempo within the same piece and determine the number of standard deviations by which this deviation differs from the mean tempo.
+
+It is interesting to see that Phonk can almost be divided into three tempo ranges: around 100 BPM, around 120 BPM and around 140 BPM. This really does explain the histogram of tempi well for this genre. With the song [help urself](https://open.spotify.com/track/1lethytswFEKkvfNIjdCC1?si=8c70d4afbb7b4766) being the outlier for slowest average tempo of around 82 BMP and the song [METAMORPHOSIS](https://open.spotify.com/track/6MlIIJwO4FxnOlrpOrS4hU?si=30b8eb9c69c34512) being the outlier for fastest average tempo of around 175 BMP. 
+
+It is interesting to see that Pop seems to have the most stable bpm range: more than 50% lies within the 120-140 bpm range and spreads out evenly on both sides. It also really only has one major outlier, the song [Fireflies](https://open.spotify.com/track/3DamFFqW32WihKkTVlwTYQ?si=8728d99d82f24c86) has an extremely fast tempo of around 180 BPM.
+
+Something fascinating is that all songs of Pop and Phonk do not really deviate a lot from the main tempo within the piece, while there are some extreme deviations within rap songs. One example of this is the song [family ties]( https://open.spotify.com/track/3QFInJAm9eyaho5vBzxInN?si=84e4f553400e459c), which has a tempo STD of around 9.5. It also seems that Rap songs are all over the place when it comes down to mean tempo, so there are not really any major outliers here it seems.
+
 
 
 ### Timbre & Genre
@@ -267,16 +284,25 @@ viopl <- comp |>
   scale_fill_viridis_d() +
   labs(x = "Spotify Timbre Coefficients", y = "", fill = "Genre")
 
-ggplotly(viopl)
+ggplotly(viopl) %>% layout(height=800)
 ```
 
 
 ***
 **Explanation**
 
-Timbre, the quality of sound that distinguishes different musical instruments, is a crucial aspect of music. The analysis of timbre is often performed using spectral content, which measures the relative strengths of various frequency components that make up the sound. In this study, the focus was on a specific timbre component, which was used to isolate and study the outliers in the corpus.
+Timbre is a term used to describe the unique tonal quality or "color" of a sound, and timbral analysis can provide insights into the spectral and temporal characteristics of different genres of music. The 12 timbre coefficients measured by the Spotify API are based on Mel-frequency cepstral coefficients (MFCCs), which are commonly used in speech and music recognition to capture the spectral features of audio signals. These coefficients can help distinguish between different types of sounds based on their harmonic content, brightness, and other factors.
 
-For every 12 levels of timbre used by Spotify API I have plotted the range for first 25 songs from each of the three genre-playlists: Pop, Phonk and Rap.
+Here is the explanation of each of the 12 coefficients:
+"c01": This coefficient represents the overall brightness or darkness of the audio segment, based on the spectral energy distribution.
+"c02": This coefficient represents the spectral centroid, which is a measure of the center of gravity of the spectral energy distribution. It is related to the perceived "brightness" or "darkness" of the sound.
+" c03": This coefficient represents the spectral spread, which is a measure of the width of the spectral energy distribution. It is related to the perceived "sharpness" or "dullness" of the sound.
+" c04": This coefficient represents the spectral skewness, which is a measure of the asymmetry of the spectral energy distribution. It is related to the perceived "smoothness" or "roughness" of the sound.
+" c05": This coefficient represents the spectral kurtosis, which is a measure of the "peakedness" of the spectral energy distribution. It is related to the perceived "clarity" or "muddiness" of the sound.
+" c06": This coefficient represents the spectral flatness, which is a measure of the relative balance of energy across the frequency spectrum. It is related to the perceived "tonality" of the sound.
+" c07",  " c08", " c09", " c10", " c11" and " c12": all these coefficients capture the overall spectral shape of the sound within each frequency range.
+
+Something interesting to see, is that the first coefficient is not very diverse since it does not have a lot of deviation from its mean value. This could be because the first coefficient, "c01," which represents the overall brightness or darkness of the audio segment, captures a more general aspect of the audio signal. It represents the average energy distribution across the entire frequency spectrum, rather than focusing on specific frequency ranges or spectral characteristics. However the opposite is true for the rest of the first half of the coefficients, they have a lot of deviation, while the second halve tends to get more and more dense and deviate less.	
 
 
 
@@ -361,21 +387,29 @@ allineed_plot <- allineed |>
   theme(legend.position="none") +
   scale_fill_viridis_c(option = "mako") 
 
-subplot(ewf_plot, loveontop_plot, allineed_plot, nrows = 3)
+subplot(ewf_plot, loveontop_plot, allineed_plot, nrows = 3) %>% layout(height=900)
 # plot_grid(ewf_plot, loveontop_plot, allineed_plot, ncol = 1)
+# ewf_plot / loveontop_plot / allineed_plot
 ```
 
 
 ***
 **Explanation**
 
-A chromagram is a visual representation of the distribution of pitches in a musical recording. The first chromatogram shows that for the Pop song: "Counting Stars" by "OneRepublic", the C# key has the longest time use by far and it seems that the C key comes second. The rest of the keys do not seem to get much playtime in comparison.
+A chromagram is a visual representation of the distribution of pitches in a musical recording. The x-axis represents the time in seconds and the y-axis represents the pitch.
 
-The second chromatogram shows that for the Pop song: "Close Eyes" by "DRVST", the C key has the longest time use by far and it seems that the C#, F and E keys follow regarding playtime. The rest of the keys do not seem to get much playtime in comparison.
+The first chromatogram shows that for the Pop song: [Counting Stars]( https://open.spotify.com/track/2tpWsVSb9UEmDRxAl1zhX1?si=cb3fd758427648ee) by *OneRepublic*, the C# pitch has the longest time use by far and it seems that C comes second. The rest of the pitches seem to get less playtime in comparison. We can clearly see that after around 21 seconds (indicated by the first red line), there are some new pitches introduced. This is correct since this is the end of the intro of the song and all the instruments slowly start playing one after another. At around 78 seconds into the song (indicated by the second red line), the same thing happens: after this ending a section again all instruments start playing again. The last time this happens is at around 206 seconds, and you can really clearly hear the point where the music introduces all the instruments again.
 
-The third chromatogram shows that for the Pop song: "Invincible" by "Pop Smoke", the F# key has the longest time use by far, all the other keys do not even come close to having as much playtime.
+The second chromatogram shows that for the Phonk song: [Close Eyes]( https://open.spotify.com/track/3CLSHJv5aUROAN2vfOyCOh?si=bb8f1799d5e3433d) by *DRVST*, the C pitch has the longest time use by far and it seems that the C#, F and E pitches follow regarding playtime. The rest of the keys do not seem to get much playtime in comparison. At around the halfway point in the song, we can hear a short pause from almost all heavy instruments before continuing the song. This is indicated with the red line at a time of around 70 seconds.
 
-Interestingly there seems to be some overlap between Pop and Phonk specific songs, whereby both genres seem to have the most playtime of the C and C# keys while the A#, A, D#, D keys all seem to have not much playtime. Furthermore it looks like the Rap song also makes the least use of the A# and D# keys, however these are the only comparable points since the F# key is being used the longest by far and the rest of keys being almost equally distributed.
+The third chromatogram shows that for the Rap song: [Invincible]( https://open.spotify.com/track/792HwhrdO3ErRKL5yRe4Ge?si=0609de95cdf94123) by *Pop Smoke*, the F# pitch has the longest time use. We can exactly tell where the beat drops and the bass is introduced, which is at around 23 second indicated by the red line again. We can clearly see the introduction of the high intensity F# pitch at that point.
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2tpWsVSb9UEmDRxAl1zhX1?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3CLSHJv5aUROAN2vfOyCOh?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/792HwhrdO3ErRKL5yRe4Ge?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
 
 
 ### Cepstrograms
@@ -498,15 +532,28 @@ cep_rap <- bzt |>
   theme_classic()+
   theme(plot.title = element_text(hjust = 0.5))
 
-subplot(cep_pop, cep_phonk, cep_rap, nrows = 3)
+subplot(cep_pop, cep_phonk, cep_rap, nrows = 3) %>% layout(height=900)
 ```
 
 
 ***
 **Explanation** 
 
-The ceptrograms show the changes regarding timbre of typical songs from each genre: Pop, Phonk and Rap.
-A ceptrogram is a visual representation of the distribution of timbral characteristics in a musical recording. Comparing the ceptrograms of three songs, “Payphone” from the Pop genre, “Sahara” from the Phonk genre and "Yonkers" from the rap genre, reveals interesting differences in their timbral distribution. In “Payphone” there is a relavtively strong concentration of timbral characteristics around a certain range, indicating a pretty stable sonic texture. On the other hand, both “Yonkers” and "Sahara" show more variation in timbral distribution, with a wider range of timbral characteristics. This suggests that these two have a more complex and varied sound texture. These differences in timbral distribution could contribute to the overall appeal of the songs and could be further explored in future analyses.
+Cepstrograms, also known as cepstral spectrograms, are a type of spectrogram where the x-axis represents the time in seconds and the y-axis represents the cepstral coefficients instead of the frequency. The ceptrograms show the changes regarding timbre of typical songs from each genre: Pop, Phonk and Rap.
+
+Comparing the ceptrograms of three songs, [Payphone]( https://open.spotify.com/track/1XGmzt0PVuFgQYYnV2It7A?si=056f611363034241) from the Pop genre, [Sahara]( https://open.spotify.com/track/6nqdgUTiWt4JbABDurkxMI?si=b41f0709602344bc) from the Phonk genre and [Yonkers]( https://open.spotify.com/track/3WQlJpaUUbGtUqAskvGA7c?si=095624db638d4349) from the rap genre, reveals interesting differences in their timbral distribution. We can immediately tell that all three songs have a clearer timbral structure towards the lower end of the coefficients, however there are some small differences between the songs. 
+
+In “Payphone” for example there is a relatively strong concentration of timbral characteristics around the second coefficient after the like the first 50 seconds, indicating a strong "brightness" or "darkness" of the sound in the areas where bright yellow accents can be seen. 
+
+The opposite is true for the coefficients in "Sahara",  there seems to be a strong concentration of timbral characteristics around the second coefficient only for like the first 25 seconds, indicating a strong "brightness" or "darkness" of the sound in the areas where bright yellow accents can be seen.
+
+On the other hand, both “Yonkers” shows more variation in timbral distribution, with a wider range of timbral characteristics. It is only in the last 50 seconds that we really see the most concentration of the second timbral coefficient. This could suggest that this song has a more complex and varied sound texture. These differences in timbral distribution could contribute to the overall appeal of the songs and could be further explored in future analyses.
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/1XGmzt0PVuFgQYYnV2It7A?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6nqdgUTiWt4JbABDurkxMI?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3WQlJpaUUbGtUqAskvGA7c?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 
 
 ### Self-similarity matrices
@@ -520,8 +567,48 @@ norms_timbre <- list("euclidean", "manhattan", "chebyshev")
 dists_timbre <- list("euclidean", "cosine", "angular")
 summary_timbre <- list("mean", "root_mean_square")
 
-taste2 <-
-  get_tidy_audio_analysis("2QjOHCTQ1Jl3zawyYOpxh6") |>
+trumpets <-
+  get_tidy_audio_analysis("6jizk5lOUnfpaZXYMdfeC6") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = summary_chroma[5], norm = norms_chroma[3]
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = summary_timbre[1]
+      )
+  )
+
+metamorphosis <-
+  get_tidy_audio_analysis("2ksyzVfU0WJoBpu8otr4pz") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = summary_chroma[5], norm = norms_chroma[3]
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = summary_timbre[1]
+      )
+  )
+
+still <-
+  get_tidy_audio_analysis("503OTo2dSqe7qk76rgsbep") |>
   compmus_align(bars, segments) |>
   select(bars) |>
   unnest(bars) |>
@@ -542,11 +629,59 @@ taste2 <-
 ```
 
 ```{r self sim matrices, echo=FALSE}
-self_sim <- bind_rows(
-  taste2 |> 
+self_sim1 <- bind_rows(
+  trumpets |> 
     compmus_self_similarity(pitches, dists_chroma[1]) |> 
     mutate(d = d / max(d), type = "Chroma"),
-  taste2 |> 
+  trumpets |> 
+    compmus_self_similarity(timbre, dists_timbre[2]) |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "mako", guide = "none") +
+  theme_classic()
+
+self_sim2 <- bind_rows(
+  metamorphosis |> 
+    compmus_self_similarity(pitches, dists_chroma[1]) |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  metamorphosis |> 
+    compmus_self_similarity(timbre, dists_timbre[2]) |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "mako", guide = "none") +
+  theme_classic()
+
+self_sim3 <- bind_rows(
+  still |> 
+    compmus_self_similarity(pitches, dists_chroma[1]) |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  still |> 
     compmus_self_similarity(timbre, dists_timbre[2]) |> 
     mutate(d = d / max(d), type = "Timbre")
 ) |>
@@ -565,16 +700,30 @@ self_sim <- bind_rows(
   facet_wrap(~type) +
   scale_fill_viridis_c(option = "mako", guide = "none") +
   theme_classic() + 
-  labs(x = "", y = "", title = "1. Pop: Payphone - Maroon 5, 2. Phonk: Sahara - Hensonn, 3. Rap: Yonkers - Tyler, The Creator")
+  labs(x = "", y = "", title = "1. Pop: Trumpets - Jason Derulo, 2. Phonk: METAMORPHOSIS - INTERWORLD, 3. Rap: Still D.R.E. - Dr. Dre, Snoop Dogg")
 
-subplot(self_sim, self_sim, self_sim, nrows=3)
+subplot(self_sim1, self_sim2, self_sim3, nrows=3) %>% layout(height=900)
 ```
 
 
 ***
+
 **Explanation**
 
-A self-similarity matrix is a visual representation of the similarity between different sections of a musical recording. The two self-similarity matrices, each summarised at the bar level but with axes in seconds, illustrate pitch- and timbre-based self-similarity within the songs: ... These songs were chosen because I think it really shows the timbre and pitch based structure of each genre well.
+A self-similarity matrix is a visual representation of the similarity between different sections of a musical recording. The two self-similarity matrices, each summarized at the bar level but with axes in seconds, illustrate pitch- and timbre-based self-similarity within the songs: [Trumpets](https://open.spotify.com/track/6jizk5lOUnfpaZXYMdfeC6?si=9f8d4be6f1074bc2) from *Jason Derulo*,  
+[METAMORPHOSIS]( https://open.spotify.com/track/2ksyzVfU0WJoBpu8otr4pz?si=9bacd80184f94342) from *INTERWORLD* and 
+[Still D.R.E.]( https://open.spotify.com/track/503OTo2dSqe7qk76rgsbep?si=730c0c0a1c6f4743) from *Dr. Dre, Snoop Dogg*,  These songs were chosen because I think it really shows the timbre and pitch based structure of each genre well.
+
+First of all we can see that each song is of different length, since these matrices are not the same size. We can identify repeated or similar musical motifs by looking for diagonal patterns in the SSM. The degree of similarity between the motifs can be estimated from the height and width of the diagonal patterns, as well as their intensity or color. Both "Trumpets" and "METAMORPHOSIS" seem to have a checkerboard pattern, which typically indicates a lack of similarity or structure in the musical piece. This pattern can occur when the musical piece has no consistent motif or structure, or when it is composed of different sections with little or no relation to each other. However it can also just mean that its features are constant over a duration of time. It is also interesting to see that that while their chroma similarity matrices look alike, their timbre similarity matrices look relatively different.
+
+"Sill D.R.E" seems to only have repeating horizontal and vertical stripes without a clear pattern. This happens when the musical piece has a repetitive structure, with repeated motifs or sections that are similar to each other.
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6jizk5lOUnfpaZXYMdfeC6?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2ksyzVfU0WJoBpu8otr4pz?utm_source=generator&theme=0" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/503OTo2dSqe7qk76rgsbep?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
 
 
 
@@ -667,7 +816,7 @@ key_templates <-
 
 ```{r keychram corpus setup, echo=FALSE}
 sad <-
-  get_tidy_audio_analysis("5UVsbUV0Kh033cqsZ5sLQi") |>
+  get_tidy_audio_analysis("3ee8Jmje8o58CHK66QrVC2") |>
   compmus_align(sections, segments) |>
   select(sections) |>
   unnest(sections) |>
@@ -695,14 +844,18 @@ sad1 <- sad |>
   theme_minimal() +
   ggtitle("SAD! - XXXTENTACION") +
   labs(x = "Time (s)", y = "")
-ggplotly(sad1)
+ggplotly(sad1) %>% layout(height=800)
 ```
 
 
 ***
 **Explanation**
 
-This is a keygram from one of the last songs from *XXXTENTACION*: [SAD!](https://open.spotify.com/track/3ee8Jmje8o58CHK66QrVC2?si=450dd927a69547c9) brought out before he died the 18th of june 2018. It is interesting because this song is from my Pop playlist while it is actually classified as more of a Hiphop/trap/R&B song. I am interested to see if the keygram shows abnormalities compared to a normal Pop song... 
+This is a keygram from one of the last songs from *XXXTENTACION*: [SAD!](https://open.spotify.com/track/3ee8Jmje8o58CHK66QrVC2?si=450dd927a69547c9) brought out before he died the 18th of june 2018. It is interesting because this song is from my Pop playlist while it is actually classified as more of a Hiphop/trap/R&B song. I was interested to see if the keygram shows abnormalities compared to a normal Pop song.
+
+However as can be seen the key estimates are really blurry, this means that the algorithm has a hard time finding a stable estimation of what the actual key usage is. The sparser texture of the song throws off the key-finding algorithm seriously. I am wondering what makes this song especially hard for the algorithm to structure, since in comparison to other songs I found that this song had one of the least clear key estimates. I think this does make the musical characteristics of the song more interesting to analyze further in the future. So in conclusion the difference between this song and songs actually classified as Pop songs, is that Pop songs tend to have a little clearer structure while this song :*SAD!* is especially unclear in its keygram.
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3ee8Jmje8o58CHK66QrVC2?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 
 
 ### Two **Mozart** chordograms: *Piano Sonata No. 11* and *MOZART PHONK*
@@ -807,7 +960,7 @@ mozart_phonk <-
       )
   )
 actual_mozart <-
-  get_tidy_audio_analysis("16walLqBosZ5bHmKNGMHts") |>
+  get_tidy_audio_analysis("3NZ8O0jXxviUvqcqnQ3FZV") |>
   compmus_align(bars, segments) |>
   select(bars) |>
   unnest(bars) |>
@@ -849,14 +1002,22 @@ ac_moz_chplt <- actual_mozart |>
   labs(title = "MOZART PHONK vs Piano Sonata No. 11", x = "Time (s)", y = "") 
   # theme(axis.text.y = element_text(size = 7), plot.margin=unit(c(5.5, 5.5, 0, 5.5), "pt"))
 
-subplot(ph_moz_chplt, ac_moz_chplt, nrows = 2)
+subplot(ph_moz_chplt, ac_moz_chplt, nrows = 2) %>% layout(height=900)
 ```
 
 
 ***
 **Explanation**
 
-In the Phonk playlist there is the song: [MOZART PHONK](https://open.spotify.com/track/4uA4FfwW15P8PguZ1uOlpl?si=a6f5ace5b3984bf8), from which the chordogram can be seen in the top plot. I thought It would be fun to compare the chordogram of that song with the actual song from Mozart: [Piano Sonata No. 11](https://open.spotify.com/track/16walLqBosZ5bHmKNGMHts?si=9cd8a36311e949ac), which can be seen in the plot below. We can immediately tell that the Phonk version of the song is sped up since the duration of the full song is only 72 seconds, while the original song from Mozart is 85 seconds. However we can also see that some structure of the original song is kept, even though a couple of chords might have been added for extra effect.
+In the Phonk playlist there is the song: [MOZART PHONK](https://open.spotify.com/track/4uA4FfwW15P8PguZ1uOlpl?si=a6f5ace5b3984bf8), from which the chordogram can be seen in the top plot. I thought It would be fun to compare the chordogram of that song with the actual song from Mozart: [Piano Sonata No. 11](https://open.spotify.com/track/3NZ8O0jXxviUvqcqnQ3FZV?si=7cbecb9ff2fe42d6), which can be seen in the plot below. The x-axis represents the time in secends whereas the y-axis represents the chords played at those times.
+
+We can see that some chord structure of the original song is kept, even though a couple of lot chords might have been altered or completely changed for extra energetic effect. It seems that the MOZART PHONK has a higher coverage of bright yellow squares, indicating that there are a lot of chords with extremely high energy. While the original song seems to have a little more balance between high energy chords and low energy chords. However when zooming in on the original song, so that it's domain is ranging from 0-70 seconds, we can see that the two songs are really quite similar in regard to their chord profile. So although I believe it is slightly difficult to compare the two songs since the duration of the original song is a lot longer, we can still clearly see a lot of resemblance of the original song in the Phonk version of the song.
+
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/4uA4FfwW15P8PguZ1uOlpl?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3NZ8O0jXxviUvqcqnQ3FZV?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
 
 
 ### temporal features
@@ -881,14 +1042,63 @@ The Fourier-based tempogram at the left is an attempt to use Spotify's API to an
 
 This song could be classified as one of the outliers in my Pop playlist, since the genre is actually more R&B/Soul, however the song still only falls slightly below the average tempo for a Pop song namely: 120-130 BPM. This can be seen in the histogram of tempi on the visual analysis page.
 
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/79MSEdtXuudhGhC5AtG07g?utm_source=generator" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
 
 
 What did I find {.storyboard data-icon="fa-spotify"}
 =========================================
 
 
-### Conclusion
+### Conclusion {data-commentary-width=450}
+
+<font style="font-size: 30px">Wrap up of my corpus analysis</font> 
+
+To conclude the analysis of my corpus, I would like to highlight a few key takeaways that I gained from creating this portfolio. I expected a lot of differences between all of the musical characteristic from the three genres: Pop, Phonk and Rap. As I mentioned in the introduction of my portfolio, I listen to the songs from these various genres under different circumstances. Therefore I would’ve guessed that there would be a lot of different features of these songs, which would make them appealing to listen to during different activities. However to my surprise I found out that the these differences were mostly only slight changes in either tempo, timbre or pitch. It was really interesting to find out that all these little changes in songs added up to make a song fit into a certain genre instead of all in the same one.
+
+First of all seeing the histogram of the different keys used for each genre and seeing that there were big differences, I expected all other measurements to have the same outcome. This expectation turned out to be not really accurate for all musical characteristic comparisons.
+
+One example of these small differences was when analyzing the different tempi of each genre, they all seemed to fall almost perfectly into the same range with an average of 120-140 BPM. Where the difference as little as 5 BPM on average was the difference between complete different genres. But when looking deeper into it, I found that the most noticeable thing wasn’t the difference of the average tempo between genres. It was the distribution of songs for each genre and the deviation of tempo within the songs itself. For example we saw that the Rap genre had some major outliers which were deviating from the mean tempo of the song. While the Pop songs where distributed with almost like a normal distribution type shape. On the other hand, Phonk songs could almost be dived into one of three tempos.
+
+Furthermore I expected to see a lot more similarities between Rap and Phonk, since both of these tend to have a similar type beat and rhythm: heavy and fast paced. While this was sometimes the case, it definitely was not always true. For example, while the energy of Phonk was really high on average, the energy of Rap was way lower than I expected it to be especially in comparison to Pop for example. It was still not low overall but compared to the genres I was analyzing it just seemed lower than expected. 
+
+Something else noticeable was seeing that according to the spotify API, the Rap genre includes the most danceable songs on average. This was unexpected too,  since Pop is know for it’s dancing songs. Not only was Rap the most danceable genre, Pop was actually the least danceable. 
+
+Interestingly I did find that for most comparisons Pop was overall the most balanced and evenly distributed with its features. The spread of datapoints was usually the highest which would lead to a more balanced representation of songs. I also felt like the Phonk genre was usually the least balanced with the least amount of spread in it’s datapoints. Rap seemed to fall somewhere in the middle of the two Genres generally speaking.
+
+Moreover I found it interesting to see how all of the chroma features had different impacts on the structure of songs and how it could effect the way a music piece was perceived. While not all songs had a truly clear structural representation for each chroma representation, like for the keygram, it was still interesting to see the differences between songs from each genre.
+
+All in all  have learnt about my taste in music and the different type of songs I listen to. I have gained a lot of insight into the different musical characteristics which play major roles into shaping music pieces into the way they are and now also now which ones are important in the genres I listen to.
+
+***
+
+```{r picture, out.width = '100%', out.height = '100%'}
+knitr::include_graphics("pics/pop.jpg")
+knitr::include_graphics("pics/phonk.jpg")
+knitr::include_graphics("pics/rap.jpg")
+```
 
 
-### Discussion
+### Discussion {data-commentary-width=450}
+
+<font style="font-size: 30px">What's next?</font>
+
+While we have analyzed the playlist data and have found that there are several overlapping features and differences between the different genres, it is important to note that these playlists are constantly updating, so they may not be entirely accurate in the future.
+
+One interesting aspect to consider when analyzing the overlapping songs between genres is the subgenres within each main genre. For example, within the broad category of "Rap" there are many subgenres such as Gangsta rap, Alternative hip hop, and even Trap, which coincidentally also has a lot overlapping features with Phonk.
+
+Analyzing the subgenres within each main genre could shed light on some of the overlapping songs and outliers in the data. It is possible that some of the overlapping songs belong to subgenres that are closely related, while others may be outliers that do not fit neatly into any one category. By analyzing the subgenres, we may be able to gain a more nuanced understanding of the relationship between different genres and their respective fan bases.
+
+Furthermore, analyzing subgenres could also help to identify emerging trends and new subgenres that are gaining popularity. For example, the rise of subgenres such as "indie pop" and "trap music" in recent years has reshaped the landscape of popular music and could be reflected in the Pop playlist data.
+
+However, it is important to note that analyzing subgenres would require a more granular approach to data collection and analysis, which may not be feasible or practical for all research projects. Nonetheless, it is an interesting avenue for future research and could lead to a deeper understanding of the complex relationships between different genres and their respective subcultures.
+
+***
+
+```{r picture2, out.width = '100%', out.height = '100%'}
+knitr::include_graphics("pics/pop.jpg")
+knitr::include_graphics("pics/phonk.jpg")
+knitr::include_graphics("pics/rap.jpg")
+```
+
 
